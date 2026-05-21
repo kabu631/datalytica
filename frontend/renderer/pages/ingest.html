@@ -1,0 +1,196 @@
+<div>
+  <h2>Data Ingestion</h2>
+  
+  <!-- Upload Section -->
+  <div class="card">
+    <h3>Upload File</h3>
+    <div id="drop-zone" class="drop-zone">
+      <p>Drag & Drop a CSV, XLSX, JSON, or Parquet file here</p>
+      <p>or</p>
+      <input type="file" id="file-input" style="display:none" accept=".csv,.xlsx,.xls,.json,.parquet,.tsv">
+      <button class="btn btn-primary" onclick="document.getElementById('file-input').click()" style="margin-top:10px;">Select File</button>
+    </div>
+    <div id="upload-status" style="margin-top: 15px; font-weight: bold;"></div>
+  </div>
+
+  <!-- Schema Preview -->
+  <div class="card" id="schema-preview" style="display:none;">
+    <h3>Dataset Overview: <span id="ds-name"></span></h3>
+    <p style="margin-bottom:15px; color:var(--text-muted);">Rows: <span id="ds-rows"></span> | Columns: <span id="ds-cols"></span></p>
+    
+    <h4>Detected Schema</h4>
+    <div style="max-height: 400px; overflow-y: auto; margin-top:10px;">
+      <table id="schema-table">
+        <thead>
+          <tr>
+            <th>Column Name</th>
+            <th>Type</th>
+            <th>Null %</th>
+            <th>Unique Count</th>
+            <th>Samples</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Join Wizard -->
+  <div class="card">
+    <h3>Join Datasets</h3>
+    <div class="form-group">
+      <label>Dataset 1</label>
+      <select id="join-ds1" class="form-control"></select>
+    </div>
+    <div class="form-group">
+      <label>Dataset 2</label>
+      <select id="join-ds2" class="form-control"></select>
+    </div>
+    <div class="form-group">
+      <label>Join Column (must exist in both)</label>
+      <input type="text" id="join-col" class="form-control" placeholder="e.g. id">
+    </div>
+    <div class="form-group">
+      <label>Join Type</label>
+      <select id="join-type" class="form-control">
+        <option value="inner">Inner</option>
+        <option value="left">Left</option>
+        <option value="right">Right</option>
+        <option value="outer">Outer</option>
+      </select>
+    </div>
+    <button class="btn btn-secondary" onclick="executeJoin()">Merge Datasets</button>
+    <div id="join-status" style="margin-top: 10px; font-weight:bold;"></div>
+  </div>
+
+  <script>
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, preventDefaults, false)
+    });
+
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false)
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false)
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      let dt = e.dataTransfer;
+      let files = dt.files;
+      if (files.length) uploadFile(files[0]);
+    });
+
+    fileInput.addEventListener('change', function() {
+      if (this.files.length) uploadFile(this.files[0]);
+      this.value = '';
+    });
+
+    async function uploadFile(file) {
+      const status = document.getElementById('upload-status');
+      status.innerText = 'Uploading and detecting schema...';
+      status.style.color = 'var(--text)';
+
+      try {
+        // Convert to ArrayBuffer so it can cross the contextBridge, then
+        // preload reconstructs FormData and sends multipart to the backend
+        const buffer = await file.arrayBuffer();
+        const res = await window.api.postFile('/ingest/upload', file.name, buffer);
+
+        status.innerText = 'Upload successful!';
+        status.style.color = 'var(--success)';
+
+        window.appState.activeDatasetId = res.dataset_id;
+        window.refreshDatasets();
+
+        showSchema(res);
+        populateJoinDropdowns();
+      } catch (err) {
+        status.innerText = 'Error: ' + err.message;
+        status.style.color = 'var(--danger)';
+      }
+    }
+
+    function showSchema(data) {
+      document.getElementById('schema-preview').style.display = 'block';
+      document.getElementById('ds-name').innerText = data.name;
+      document.getElementById('ds-rows').innerText = data.row_count;
+      document.getElementById('ds-cols').innerText = data.column_count;
+      
+      const tbody = document.querySelector('#schema-table tbody');
+      tbody.innerHTML = '';
+      
+      data.columns.forEach(col => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${col.column_name}</strong></td>
+          <td><span class="badge badge-info">${col.detected_type}</span></td>
+          <td>${col.null_pct.toFixed(2)}%</td>
+          <td>${col.unique_count}</td>
+          <td style="font-size:0.85rem; color:var(--text-muted);">${col.sample_values}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function populateJoinDropdowns() {
+      try {
+        const res = await window.api.get('/ingest/datasets');
+        const ds1 = document.getElementById('join-ds1');
+        const ds2 = document.getElementById('join-ds2');
+        ds1.innerHTML = ''; ds2.innerHTML = '';
+        
+        res.forEach(d => {
+          const opt1 = new Option(`${d.name} (ID: ${d.id})`, d.id);
+          const opt2 = new Option(`${d.name} (ID: ${d.id})`, d.id);
+          ds1.add(opt1); ds2.add(opt2);
+        });
+      } catch (e) {
+        console.error("Failed to load datasets for join", e);
+      }
+    }
+
+    async function executeJoin() {
+      const btn = document.getElementById('join-status');
+      btn.innerText = "Merging...";
+      btn.style.color = "var(--text)";
+      
+      const payload = {
+        dataset_id_1: parseInt(document.getElementById('join-ds1').value),
+        dataset_id_2: parseInt(document.getElementById('join-ds2').value),
+        join_column: document.getElementById('join-col').value,
+        join_type: document.getElementById('join-type').value
+      };
+      
+      if (!payload.join_column) {
+        btn.innerText = "Please specify a join column.";
+        btn.style.color = "var(--danger)";
+        return;
+      }
+      
+      try {
+        const res = await window.api.post('/ingest/join', payload);
+        btn.innerText = `Successfully merged! New Dataset ID: ${res.dataset_id}`;
+        btn.style.color = "var(--success)";
+        
+        window.appState.activeDatasetId = res.dataset_id;
+        window.refreshDatasets();
+        showSchema(res);
+      } catch (e) {
+        btn.innerText = "Error: " + e.message;
+        btn.style.color = "var(--danger)";
+      }
+    }
+
+    populateJoinDropdowns();
+  </script>
+</div>

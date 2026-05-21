@@ -1,0 +1,144 @@
+<div style="display:flex; height:100%; flex-direction:column;">
+  <h2>Charts & Visualization</h2>
+
+  <div style="display:flex; gap:20px; flex:1;">
+    
+    <!-- Left Sidebar: Controls -->
+    <div style="width:300px; display:flex; flex-direction:column; gap:20px;">
+      
+      <!-- AI Recommend -->
+      <div class="card">
+        <h3>✨ AI Chart Builder</h3>
+        <input type="text" id="ai-chart-q" class="form-control" placeholder="What do you want to see?" style="margin-bottom:10px;">
+        <button class="btn btn-primary" onclick="recommendChart()" style="width:100%;">Suggest Chart</button>
+        <div id="rec-status" style="margin-top:10px; font-weight:bold; font-size:0.9rem;"></div>
+      </div>
+
+      <!-- Manual Controls -->
+      <div class="card" style="flex:1;">
+        <h3>Chart Settings</h3>
+        
+        <div class="form-group">
+          <label>Chart Type</label>
+          <select id="chart-type" class="form-control">
+            <option value="bar">Bar Chart</option>
+            <option value="line">Line Chart</option>
+            <option value="scatter">Scatter Plot</option>
+            <option value="pie">Pie Chart</option>
+            <option value="histogram">Histogram</option>
+            <option value="heatmap">Heatmap</option>
+            <option value="box">Box Plot</option>
+            <option value="area">Area Chart</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>X-Axis Column</label>
+          <input type="text" id="x-col" class="form-control" placeholder="e.g. date">
+        </div>
+        
+        <div class="form-group">
+          <label>Y-Axis Column</label>
+          <input type="text" id="y-col" class="form-control" placeholder="e.g. sales">
+        </div>
+        
+        <div class="form-group">
+          <label>Color Grouping (Optional)</label>
+          <input type="text" id="color-col" class="form-control" placeholder="e.g. region">
+        </div>
+        
+        <button class="btn btn-secondary" onclick="generateChart()" style="width:100%; margin-top:10px;">Render Chart</button>
+      </div>
+
+    </div>
+
+    <!-- Right Area: Plot -->
+    <div class="card" style="flex:1; display:flex; flex-direction:column; min-height:600px;">
+      <h3 id="chart-title">Preview</h3>
+      <div id="chart-plot" style="flex:1; width:100%;"></div>
+      
+      <div style="margin-top:15px; border-top:1px solid var(--border); padding-top:15px;">
+        <h4>Python Plotly Code</h4>
+        <pre><code id="chart-code" style="color: #61afef; font-weight:bold;"></code></pre>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    window.addEventListener('dataset-changed', () => {
+      document.getElementById('chart-plot').innerHTML = '';
+      document.getElementById('chart-code').innerText = '';
+      document.getElementById('rec-status').innerText = '';
+    });
+
+    async function recommendChart() {
+      if (!window.appState.activeDatasetId) {
+        alert("Please select a dataset first.");
+        return;
+      }
+      const q = document.getElementById('ai-chart-q').value.trim();
+      if (!q) return;
+
+      const status = document.getElementById('rec-status');
+      status.innerText = "Analyzing schemas...";
+      status.style.color = "var(--text)";
+
+      try {
+        const payload = { dataset_id: window.appState.activeDatasetId, question: q };
+        const res = await window.api.post('/charts/recommend', payload);
+        
+        if (res.error) throw new Error(res.error);
+
+        // Populate fields
+        document.getElementById('chart-type').value = res.chart_type || 'bar';
+        document.getElementById('x-col').value = res.x_column || '';
+        document.getElementById('y-col').value = res.y_column || '';
+        document.getElementById('color-col').value = res.color_column || '';
+        
+        status.innerText = `AI Reason: ${res.reason}`;
+        status.style.color = "var(--success)";
+        
+        generateChart();
+      } catch (err) {
+        status.innerText = "Error: " + err.message;
+        status.style.color = "var(--danger)";
+      }
+    }
+
+    async function generateChart() {
+      if (!window.appState.activeDatasetId) {
+        alert("Please select a dataset first.");
+        return;
+      }
+      
+      const payload = {
+        dataset_id: window.appState.activeDatasetId,
+        chart_type: document.getElementById('chart-type').value,
+        x_column: document.getElementById('x-col').value || null,
+        y_column: document.getElementById('y-col').value || null,
+        color_column: document.getElementById('color-col').value || null,
+        title: "Generated Visualization"
+      };
+
+      try {
+        const res = await window.api.post('/charts/generate', payload);
+        
+        // Fix font color for dark mode
+        const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (res.plotly_json.layout) {
+           res.plotly_json.layout.font = { color: isDark ? '#f0f0f0' : '#333333' };
+           res.plotly_json.layout.paper_bgcolor = 'rgba(0,0,0,0)';
+           res.plotly_json.layout.plot_bgcolor = 'rgba(0,0,0,0)';
+        }
+
+        Plotly.newPlot('chart-plot', res.plotly_json.data, res.plotly_json.layout);
+        document.getElementById('chart-code').className = "language-python";
+        document.getElementById('chart-code').innerText = res.python_code;
+        hljs.highlightElement(document.getElementById('chart-code'));
+      } catch (err) {
+        alert("Failed to render chart: " + err.message);
+      }
+    }
+  </script>
+</div>

@@ -1,0 +1,687 @@
+<style>
+  .etl-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .etl-tile {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    transition: border-color 0.15s, background 0.15s;
+    width: 100%;
+  }
+  .etl-tile:hover { border-color: var(--primary); }
+  .etl-tile.active {
+    border-color: var(--primary);
+    background: rgba(83,74,183,0.08);
+  }
+  .tile-icon { font-size: 1.25em; }
+  .tile-title { font-weight: 600; font-size: 0.88em; margin-top: 4px; }
+  .tile-desc  { font-size: 0.75em; color: var(--text-muted); }
+
+  .action-panel-inner {
+    animation: etlSlide 0.18s ease;
+  }
+  @keyframes etlSlide {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .filter-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
+  .filter-row .form-group { margin: 0; flex: 1; min-width: 130px; }
+  .filter-row label { font-size: 0.78em; margin-bottom: 4px; display: block; }
+
+  .dir-toggle { display: flex; }
+  .dir-btn {
+    padding: 9px 14px;
+    border: 1px solid var(--border);
+    background: var(--bg-color);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 0.83em;
+    transition: all 0.12s;
+    line-height: 1;
+  }
+  .dir-btn:first-child { border-radius: 8px 0 0 8px; }
+  .dir-btn:last-child  { border-radius: 0 8px 8px 0; border-left: none; }
+  .dir-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+  .col-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+  .col-chip {
+    display: inline-block;
+    background: var(--border);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 0.77em;
+    font-family: monospace;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: background 0.12s;
+  }
+  .col-chip:hover { background: var(--primary); color: white; }
+
+  .col-checklist { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .col-check-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 11px;
+    cursor: pointer;
+    font-size: 0.84em;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .col-check-label input { cursor: pointer; }
+  .col-check-label.checked {
+    border-color: var(--danger);
+    background: rgba(220,53,69,0.1);
+    color: var(--danger);
+  }
+
+  .result-card { display: none; }
+  .result-card.success { border-left: 4px solid var(--success) !important; }
+  .result-card.error   { border-left: 4px solid var(--danger)  !important; }
+
+  .stat-pill {
+    display: inline-block;
+    padding: 3px 11px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    background: var(--border);
+    margin-right: 6px;
+    margin-bottom: 4px;
+  }
+  .stat-removed { background: rgba(220,53,69,0.15); color: var(--danger); }
+  .stat-added   { background: rgba(40,167,69,0.15);  color: var(--success); }
+
+  .preview-scroll {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 230px;
+    margin-top: 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .preview-scroll table { margin-bottom: 0; }
+  .preview-scroll th, .preview-scroll td { white-space: nowrap; }
+
+  .panel-actions { margin-top: 16px; display: flex; gap: 10px; }
+</style>
+
+<div>
+  <h2>Transform Your Data</h2>
+  <p style="color:var(--text-muted); margin-bottom:20px;">No coding needed. Pick a tool or describe what you want.</p>
+
+  <!-- Quick Action Tiles -->
+  <div class="etl-grid">
+    <button class="etl-tile" id="tile-filter"  onclick="showETLPanel('filter')">
+      <span class="tile-icon">&#9655;</span>
+      <span class="tile-title">Filter Rows</span>
+      <span class="tile-desc">Keep only rows that match a condition</span>
+    </button>
+    <button class="etl-tile" id="tile-dedup"   onclick="showETLPanel('dedup')">
+      <span class="tile-icon">&#9651;</span>
+      <span class="tile-title">Remove Duplicates</span>
+      <span class="tile-desc">Delete repeated rows from your data</span>
+    </button>
+    <button class="etl-tile" id="tile-sort"    onclick="showETLPanel('sort')">
+      <span class="tile-icon">&#8645;</span>
+      <span class="tile-title">Sort Data</span>
+      <span class="tile-desc">Order your rows by any column</span>
+    </button>
+    <button class="etl-tile" id="tile-addcol"  onclick="showETLPanel('addcol')">
+      <span class="tile-icon">&#43;</span>
+      <span class="tile-title">Add Column</span>
+      <span class="tile-desc">Create a new calculated column</span>
+    </button>
+    <button class="etl-tile" id="tile-dropcol" onclick="showETLPanel('dropcol')">
+      <span class="tile-icon">&#10005;</span>
+      <span class="tile-title">Remove Columns</span>
+      <span class="tile-desc">Delete columns you don't need</span>
+    </button>
+    <button class="etl-tile" id="tile-rename"  onclick="showETLPanel('rename')">
+      <span class="tile-icon">&#9998;</span>
+      <span class="tile-title">Rename Column</span>
+      <span class="tile-desc">Give a column a better name</span>
+    </button>
+  </div>
+
+  <!-- Column load status bar -->
+  <div id="etl-col-status" style="font-size:0.82em; min-height:20px; margin-bottom:10px; display:flex; align-items:center; gap:10px;">
+    <span id="etl-col-status-text" style="color:var(--text-muted);">Select a dataset to get started.</span>
+    <button id="etl-col-retry" class="btn btn-secondary" style="padding:3px 10px;font-size:0.8em;display:none;" onclick="etlLoadCols()">Reload Columns</button>
+  </div>
+
+  <!-- Action Panel -->
+  <div id="etl-action-panel" class="card" style="display:none;"></div>
+
+  <!-- AI Section -->
+  <div class="card">
+    <h3 style="margin-bottom:6px;">Ask AI to Transform</h3>
+    <p style="color:var(--text-muted); font-size:0.84em; margin-bottom:12px;">
+      Describe what you want in plain English — AI will write and run the code for you.
+    </p>
+    <textarea id="etl-nl" class="form-control" rows="2"
+      placeholder='e.g. "Keep only rows where sales > 1000" or "Replace missing values in price with 0" or "Create a profit column = revenue minus cost"'
+    ></textarea>
+    <div style="display:flex; align-items:center; gap:12px; margin-top:10px; flex-wrap:wrap;">
+      <button class="btn btn-primary" id="ai-apply-btn" onclick="etlAiApply()">Apply with AI</button>
+      <span id="etl-ai-status" style="font-size:0.88em; font-weight:600;"></span>
+    </div>
+  </div>
+
+  <!-- Result Card -->
+  <div id="etl-result-card" class="card result-card">
+    <div id="etl-result-msg" style="font-size:1.05em; font-weight:600; margin-bottom:8px;"></div>
+    <div id="etl-result-stats" style="margin-bottom:10px;"></div>
+    <details style="margin-bottom:8px;">
+      <summary style="cursor:pointer; font-size:0.78em; color:var(--text-muted); user-select:none; -webkit-user-select:none;">
+        Show generated code
+      </summary>
+      <pre id="etl-result-code" style="font-size:0.78em; padding:8px; background:var(--bg-color); border:1px solid var(--border); border-radius:4px; overflow-x:auto; margin-top:6px; white-space:pre-wrap;"></pre>
+    </details>
+    <div class="preview-scroll">
+      <table id="etl-preview-table">
+        <thead id="etl-preview-thead"></thead>
+        <tbody id="etl-preview-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  var etlCols = [];
+  var etlActivePanel = null;
+  var etlSortAsc = true;
+
+  // ── Column loading ─────────────────────────────────────────────
+  function etlSetColStatus(state, n) {
+    var txt  = document.getElementById('etl-col-status-text');
+    var btn  = document.getElementById('etl-col-retry');
+    if (!txt) return;
+    if (state === 'loading') {
+      txt.style.color = 'var(--text-muted)'; txt.innerText = 'Loading columns…'; btn.style.display = 'none';
+    } else if (state === 'ok') {
+      txt.style.color = 'var(--success)'; txt.innerText = n + ' column' + (n===1?'':'s') + ' loaded'; btn.style.display = 'none';
+    } else if (state === 'empty') {
+      txt.style.color = 'var(--warning)'; txt.innerText = 'Dataset appears empty — no columns found.'; btn.style.display = '';
+    } else if (state === 'error') {
+      txt.style.color = 'var(--danger)'; txt.innerText = 'Could not load columns. Try clicking Reload Columns or restart the backend.'; btn.style.display = '';
+    } else {
+      txt.style.color = 'var(--text-muted)'; txt.innerText = 'Select a dataset to get started.'; btn.style.display = 'none';
+    }
+  }
+
+  async function etlLoadCols() {
+    var id = window.appState.activeDatasetId;
+    if (!id) { etlCols = []; etlSetColStatus('none'); return; }
+    etlSetColStatus('loading');
+    try {
+      var result = await window.api.get('/ingest/columns/' + id);
+      etlCols = Array.isArray(result) ? result : [];
+      if (etlCols.length) { etlSetColStatus('ok', etlCols.length); }
+      else { etlSetColStatus('empty'); }
+    } catch (e) {
+      // Fallback: derive column names from the preview endpoint (always available)
+      try {
+        var preview = await window.api.get('/ingest/preview/' + id);
+        if (preview.rows && preview.rows.length > 0) {
+          etlCols = Object.keys(preview.rows[0]).map(function(k) { return {name: k, type: 'text'}; });
+          etlSetColStatus('ok', etlCols.length);
+        } else {
+          etlCols = []; etlSetColStatus('empty');
+        }
+      } catch (e2) {
+        etlCols = []; etlSetColStatus('error');
+      }
+    }
+    if (etlActivePanel) showETLPanel(etlActivePanel);
+  }
+
+  window.addEventListener('dataset-changed', function() {
+    etlHidePanel();
+    etlHideResult();
+    document.getElementById('etl-nl').value = '';
+    document.getElementById('etl-ai-status').innerText = '';
+    etlLoadCols();
+  });
+
+  // ── Panel show/hide ────────────────────────────────────────────
+  function showETLPanel(id) {
+    if (etlActivePanel === id) { etlHidePanel(); return; }
+    etlActivePanel = id;
+    // If we have a dataset but no columns yet, kick off load (will re-render panel when done)
+    if (window.appState.activeDatasetId && !etlCols.length) { etlLoadCols(); }
+    document.querySelectorAll('.etl-tile').forEach(function(t) { t.classList.remove('active'); });
+    var tile = document.getElementById('tile-' + id);
+    if (tile) tile.classList.add('active');
+
+    var panel = document.getElementById('etl-action-panel');
+    panel.style.display = 'block';
+
+    var html = '';
+    if (id === 'filter')  html = etlBuildFilter();
+    if (id === 'dedup')   html = etlBuildDedup();
+    if (id === 'sort')    html = etlBuildSort();
+    if (id === 'addcol')  html = etlBuildAddCol();
+    if (id === 'dropcol') html = etlBuildDropCol();
+    if (id === 'rename')  html = etlBuildRename();
+    panel.innerHTML = '<div class="action-panel-inner">' + html + '</div>';
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function etlHidePanel() {
+    etlActivePanel = null;
+    var panel = document.getElementById('etl-action-panel');
+    panel.style.display = 'none';
+    panel.innerHTML = '';
+    document.querySelectorAll('.etl-tile').forEach(function(t) { t.classList.remove('active'); });
+  }
+
+  // ── Helper: column <select> options ───────────────────────────
+  function etlColOptions() {
+    if (!etlCols.length) return '<option value="">-- load a dataset first --</option>';
+    return etlCols.map(function(c) {
+      return '<option value="' + etlEsc(c.name) + '">' + etlEsc(c.name) + ' (' + c.type + ')</option>';
+    }).join('');
+  }
+
+  function etlEsc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ── FILTER panel ───────────────────────────────────────────────
+  function etlBuildFilter() {
+    return '<h3 style="margin-bottom:10px;">Filter Rows</h3>' +
+      '<p style="color:var(--text-muted);font-size:0.84em;margin-bottom:14px;">Keep rows that match your condition. All other rows will be removed.</p>' +
+      '<div class="filter-row">' +
+        '<div class="form-group"><label>Column</label>' +
+          '<select id="flt-col" class="form-control" onchange="etlFilterColChange()">' + etlColOptions() + '</select></div>' +
+        '<div class="form-group"><label>Condition</label>' +
+          '<select id="flt-op" class="form-control" onchange="etlFilterOpChange()">' +
+            '<option value="gt">is greater than</option>' +
+            '<option value="gte">is greater than or equal to</option>' +
+            '<option value="lt">is less than</option>' +
+            '<option value="lte">is less than or equal to</option>' +
+            '<option value="eq">equals</option>' +
+            '<option value="neq">is not equal to</option>' +
+            '<option value="contains">contains</option>' +
+            '<option value="not_contains">does not contain</option>' +
+            '<option value="startswith">starts with</option>' +
+            '<option value="empty">is empty / blank</option>' +
+            '<option value="notempty">is not empty / blank</option>' +
+          '</select></div>' +
+        '<div class="form-group" id="flt-val-wrap"><label>Value</label>' +
+          '<input type="text" id="flt-val" class="form-control" placeholder="Enter value..."></div>' +
+      '</div>' +
+      '<div class="panel-actions">' +
+        '<button class="btn btn-primary" onclick="etlApplyFilter()">Apply Filter</button>' +
+        '<button class="btn btn-secondary" onclick="etlHidePanel()">Cancel</button>' +
+      '</div>';
+  }
+
+  function etlFilterOpChange() {
+    var op = document.getElementById('flt-op').value;
+    var wrap = document.getElementById('flt-val-wrap');
+    if (wrap) wrap.style.display = (op === 'empty' || op === 'notempty') ? 'none' : '';
+  }
+
+  function etlFilterColChange() {}
+
+  function etlApplyFilter() {
+    if (!etlCheckDataset()) return;
+    var col     = document.getElementById('flt-col').value;
+    var op      = document.getElementById('flt-op').value;
+    var valEl   = document.getElementById('flt-val');
+    var val     = valEl ? valEl.value : '';
+    var colInfo = etlCols.find(function(c) { return c.name === col; });
+    var isNum   = colInfo && /^(int|float|numeric|number)/.test(colInfo.type);
+    var safeCol = col.replace(/'/g, "\\'");
+    var numVal  = parseFloat(val);
+    var quoted  = "'" + val.replace(/'/g, "\\'") + "'";
+    var rhs     = isNum && !isNaN(numVal) ? numVal : quoted;
+
+    var code = '';
+    switch (op) {
+      case 'gt':          code = "df = df[df['" + safeCol + "'] > "  + rhs + "]"; break;
+      case 'gte':         code = "df = df[df['" + safeCol + "'] >= " + rhs + "]"; break;
+      case 'lt':          code = "df = df[df['" + safeCol + "'] < "  + rhs + "]"; break;
+      case 'lte':         code = "df = df[df['" + safeCol + "'] <= " + rhs + "]"; break;
+      case 'eq':          code = "df = df[df['" + safeCol + "'] == " + rhs + "]"; break;
+      case 'neq':         code = "df = df[df['" + safeCol + "'] != " + rhs + "]"; break;
+      case 'contains':    code = "df = df[df['" + safeCol + "'].astype(str).str.contains('" + val.replace(/'/g,"\\'") + "', na=False)]"; break;
+      case 'not_contains':code = "df = df[~df['" + safeCol + "'].astype(str).str.contains('" + val.replace(/'/g,"\\'") + "', na=False)]"; break;
+      case 'startswith':  code = "df = df[df['" + safeCol + "'].astype(str).str.startswith('" + val.replace(/'/g,"\\'") + "')]"; break;
+      case 'empty':       code = "df = df[df['" + safeCol + "'].isna() | (df['" + safeCol + "'].astype(str).str.strip() == '')]"; break;
+      case 'notempty':    code = "df = df[df['" + safeCol + "'].notna() & (df['" + safeCol + "'].astype(str).str.strip() != '')]"; break;
+    }
+    etlRun(code, 'Filter: ' + col + ' ' + op + (val ? ' ' + val : ''));
+  }
+
+  // ── DEDUP panel ────────────────────────────────────────────────
+  function etlBuildDedup() {
+    return '<h3 style="margin-bottom:8px;">Remove Duplicates</h3>' +
+      '<p style="color:var(--text-muted);font-size:0.84em;margin-bottom:14px;">' +
+        'Scans your dataset and removes any rows that are exact copies of another row. ' +
+        'The first occurrence of each duplicate is kept.' +
+      '</p>' +
+      '<div class="panel-actions">' +
+        '<button class="btn btn-primary" onclick="etlApplyDedup()">Remove Duplicates</button>' +
+        '<button class="btn btn-secondary" onclick="etlHidePanel()">Cancel</button>' +
+      '</div>';
+  }
+
+  function etlApplyDedup() {
+    if (!etlCheckDataset()) return;
+    etlRun('df = df.drop_duplicates()', 'Remove duplicate rows');
+  }
+
+  // ── SORT panel ─────────────────────────────────────────────────
+  function etlBuildSort() {
+    return '<h3 style="margin-bottom:10px;">Sort Data</h3>' +
+      '<p style="color:var(--text-muted);font-size:0.84em;margin-bottom:14px;">Reorder all rows based on the values in a column.</p>' +
+      '<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;">' +
+        '<div class="form-group" style="margin:0;flex:2;min-width:180px;">' +
+          '<label style="font-size:0.8em;display:block;margin-bottom:4px;">Sort by column</label>' +
+          '<select id="sort-col" class="form-control">' + etlColOptions() + '</select>' +
+        '</div>' +
+        '<div class="form-group" style="margin:0;">' +
+          '<label style="font-size:0.8em;display:block;margin-bottom:4px;">Order</label>' +
+          '<div class="dir-toggle">' +
+            '<button class="dir-btn active" id="sort-btn-asc"  onclick="etlSetSortDir(true)">A &#8594; Z &nbsp;/&nbsp; Smallest First</button>' +
+            '<button class="dir-btn"        id="sort-btn-desc" onclick="etlSetSortDir(false)">Z &#8594; A &nbsp;/&nbsp; Largest First</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="panel-actions">' +
+        '<button class="btn btn-primary" onclick="etlApplySort()">Sort Data</button>' +
+        '<button class="btn btn-secondary" onclick="etlHidePanel()">Cancel</button>' +
+      '</div>';
+  }
+
+  function etlSetSortDir(asc) {
+    etlSortAsc = asc;
+    var btnA = document.getElementById('sort-btn-asc');
+    var btnD = document.getElementById('sort-btn-desc');
+    if (btnA) btnA.classList.toggle('active', asc);
+    if (btnD) btnD.classList.toggle('active', !asc);
+  }
+
+  function etlApplySort() {
+    if (!etlCheckDataset()) return;
+    var col  = document.getElementById('sort-col').value;
+    var asc  = etlSortAsc;
+    var code = "df = df.sort_values('" + col.replace(/'/g,"\\'") + "', ascending=" + (asc ? 'True' : 'False') + ")";
+    etlRun(code, 'Sort by ' + col + ' (' + (asc ? 'A→Z / Smallest first' : 'Z→A / Largest first') + ')');
+  }
+
+  // ── ADD COLUMN panel ───────────────────────────────────────────
+  function etlBuildAddCol() {
+    var chips = etlCols.map(function(c) {
+      return '<span class="col-chip" onclick="etlInsertChip(\'' + etlEsc(c.name) + '\')">' + etlEsc(c.name) + '</span>';
+    }).join('');
+    return '<h3 style="margin-bottom:10px;">Add a New Column</h3>' +
+      '<p style="color:var(--text-muted);font-size:0.84em;margin-bottom:14px;">Calculate a new column from your existing data.</p>' +
+      '<div class="form-group">' +
+        '<label>New column name</label>' +
+        '<input type="text" id="addcol-name" class="form-control" placeholder="e.g. profit, total_score, price_per_unit">' +
+      '</div>' +
+      '<div class="form-group">' +
+        '<label>Formula <span style="font-weight:normal;color:var(--text-muted);font-size:0.85em;">(use + &minus; * / for maths)</span></label>' +
+        '<input type="text" id="addcol-formula" class="form-control" placeholder="e.g. revenue - cost">' +
+        (chips ? '<p style="font-size:0.77em;color:var(--text-muted);margin-top:6px;">Click to insert a column name:</p><div class="col-chips">' + chips + '</div>' : '') +
+      '</div>' +
+      '<div class="panel-actions">' +
+        '<button class="btn btn-primary" onclick="etlApplyAddCol()">Add Column</button>' +
+        '<button class="btn btn-secondary" onclick="etlHidePanel()">Cancel</button>' +
+      '</div>';
+  }
+
+  function etlInsertChip(colName) {
+    var inp = document.getElementById('addcol-formula');
+    if (!inp) return;
+    var pos = inp.selectionStart || inp.value.length;
+    var v = inp.value;
+    inp.value = v.slice(0, pos) + colName + v.slice(pos);
+    inp.focus();
+    inp.selectionStart = inp.selectionEnd = pos + colName.length;
+  }
+
+  function etlApplyAddCol() {
+    if (!etlCheckDataset()) return;
+    var name    = document.getElementById('addcol-name').value.trim();
+    var formula = document.getElementById('addcol-formula').value.trim();
+    if (!name || !formula) { etlShowError('Please fill in both the column name and the formula.'); return; }
+    var safeName = name.replace(/'/g, "\\'");
+    var code = "df['" + safeName + "'] = df.eval('" + formula.replace(/'/g,"\\'") + "')";
+    etlRun(code, 'Add column: ' + name + ' = ' + formula);
+  }
+
+  // ── DROP COLUMNS panel ─────────────────────────────────────────
+  function etlBuildDropCol() {
+    if (!etlCols.length) {
+      return '<p style="color:var(--text-muted);">No columns found. Please select a dataset first.</p>' +
+        '<div class="panel-actions"><button class="btn btn-secondary" onclick="etlHidePanel()">Close</button></div>';
+    }
+    var checks = etlCols.map(function(c) {
+      return '<label class="col-check-label" id="chk-lbl-' + btoa(c.name).replace(/=/g,'') + '" onclick="etlToggleCheck(this)">' +
+        '<input type="checkbox" value="' + etlEsc(c.name) + '" style="pointer-events:none;">' +
+        etlEsc(c.name) +
+        '<span style="font-size:0.72em;color:var(--text-muted);margin-left:4px;">' + c.type + '</span>' +
+      '</label>';
+    }).join('');
+    return '<h3 style="margin-bottom:8px;">Remove Columns</h3>' +
+      '<p style="color:var(--text-muted);font-size:0.84em;margin-bottom:12px;">Select the columns to delete. All their data will be removed.</p>' +
+      '<div class="col-checklist">' + checks + '</div>' +
+      '<div class="panel-actions">' +
+        '<button class="btn btn-danger" onclick="etlApplyDropCols()">Remove Selected Columns</button>' +
+        '<button class="btn btn-secondary" onclick="etlHidePanel()">Cancel</button>' +
+      '</div>';
+  }
+
+  function etlToggleCheck(label) {
+    var cb = label.querySelector('input[type=checkbox]');
+    if (!cb) return;
+    cb.checked = !cb.checked;
+    label.classList.toggle('checked', cb.checked);
+  }
+
+  function etlApplyDropCols() {
+    if (!etlCheckDataset()) return;
+    var cols = [];
+    document.querySelectorAll('#etl-action-panel input[type=checkbox]:checked').forEach(function(cb) {
+      cols.push(cb.value);
+    });
+    if (!cols.length) { etlShowError('Please select at least one column to remove.'); return; }
+    var colsJson = JSON.stringify(cols);
+    var code = 'df = df.drop(columns=' + colsJson + ')';
+    etlRun(code, 'Remove columns: ' + cols.join(', '));
+  }
+
+  // ── RENAME panel ───────────────────────────────────────────────
+  function etlBuildRename() {
+    return '<h3 style="margin-bottom:10px;">Rename a Column</h3>' +
+      '<p style="color:var(--text-muted);font-size:0.84em;margin-bottom:14px;">Give a column a cleaner or more descriptive name.</p>' +
+      '<div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">' +
+        '<div class="form-group" style="margin:0;flex:2;min-width:160px;">' +
+          '<label style="font-size:0.8em;display:block;margin-bottom:4px;">Current name</label>' +
+          '<select id="ren-old" class="form-control">' + etlColOptions() + '</select>' +
+        '</div>' +
+        '<div style="padding-bottom:10px;font-size:1.3em;color:var(--text-muted);">&#8594;</div>' +
+        '<div class="form-group" style="margin:0;flex:2;min-width:160px;">' +
+          '<label style="font-size:0.8em;display:block;margin-bottom:4px;">New name</label>' +
+          '<input type="text" id="ren-new" class="form-control" placeholder="Enter new name...">' +
+        '</div>' +
+      '</div>' +
+      '<div class="panel-actions">' +
+        '<button class="btn btn-primary" onclick="etlApplyRename()">Rename Column</button>' +
+        '<button class="btn btn-secondary" onclick="etlHidePanel()">Cancel</button>' +
+      '</div>';
+  }
+
+  function etlApplyRename() {
+    if (!etlCheckDataset()) return;
+    var oldName = document.getElementById('ren-old').value;
+    var newName = document.getElementById('ren-new').value.trim();
+    if (!newName) { etlShowError('Please enter a new name.'); return; }
+    var code = "df = df.rename(columns={'" + oldName.replace(/'/g,"\\'") + "': '" + newName.replace(/'/g,"\\'") + "'})";
+    etlRun(code, 'Rename "' + oldName + '" to "' + newName + '"');
+  }
+
+  // ── AI Transform ───────────────────────────────────────────────
+  async function etlAiApply() {
+    if (!etlCheckDataset()) return;
+    var instruction = document.getElementById('etl-nl').value.trim();
+    if (!instruction) {
+      var statusEl = document.getElementById('etl-ai-status');
+      statusEl.innerText = 'Please type what you want to do first.';
+      statusEl.style.color = 'var(--warning)';
+      document.getElementById('etl-nl').focus();
+      return;
+    }
+
+    var btn = document.getElementById('ai-apply-btn');
+    var statusEl = document.getElementById('etl-ai-status');
+    btn.disabled = true;
+    btn.innerText = 'Working...';
+    statusEl.innerText = 'Generating transformation...';
+    statusEl.style.color = 'var(--text-muted)';
+
+    try {
+      var genRes = await window.api.post('/etl/transform/generate', {
+        dataset_id: +window.appState.activeDatasetId,
+        instruction: instruction
+      });
+      var code = genRes.python_code;
+      statusEl.innerText = 'Applying to your data...';
+
+      var execRes = await window.api.post('/etl/transform/execute', {
+        dataset_id: +window.appState.activeDatasetId,
+        python_code: code
+      });
+
+      statusEl.innerText = '';
+      btn.disabled = false;
+      btn.innerText = 'Apply with AI';
+      etlShowResult(execRes, instruction, code);
+      document.getElementById('etl-nl').value = '';
+      etlLoadCols();
+    } catch (err) {
+      btn.disabled = false;
+      btn.innerText = 'Apply with AI';
+      statusEl.innerText = etlExtractError(err.message);
+      statusEl.style.color = 'var(--danger)';
+    }
+  }
+
+  // ── Shared: run pre-built code ─────────────────────────────────
+  async function etlRun(code, description) {
+    var panel = document.getElementById('etl-action-panel');
+    var btn = panel.querySelector('button.btn-primary');
+    var origText = btn ? btn.innerText : '';
+    if (btn) { btn.disabled = true; btn.innerText = 'Applying...'; }
+
+    try {
+      var res = await window.api.post('/etl/transform/execute', {
+        dataset_id: +window.appState.activeDatasetId,
+        python_code: code
+      });
+      etlHidePanel();
+      etlShowResult(res, description, code);
+      etlLoadCols();
+    } catch (err) {
+      if (btn) { btn.disabled = false; btn.innerText = origText; }
+      etlShowError(etlExtractError(err.message));
+    }
+  }
+
+  // ── Result display ─────────────────────────────────────────────
+  function etlShowResult(res, description, code) {
+    var card = document.getElementById('etl-result-card');
+    card.className = 'card result-card success';
+    card.style.display = 'block';
+
+    document.getElementById('etl-result-msg').innerText = 'Done! "' + description + '" was applied successfully.';
+
+    var removed = res.rows_before - res.rows_after;
+    var added   = res.rows_after  - res.rows_before;
+    var stats   = '<span class="stat-pill">Before: ' + res.rows_before.toLocaleString() + ' rows</span>' +
+                  '<span class="stat-pill">After: '  + res.rows_after.toLocaleString()  + ' rows</span>';
+    if (removed > 0) stats += '<span class="stat-pill stat-removed">' + removed.toLocaleString() + ' rows removed</span>';
+    if (added   > 0) stats += '<span class="stat-pill stat-added">'   + added.toLocaleString()   + ' rows added</span>';
+    document.getElementById('etl-result-stats').innerHTML = stats;
+    document.getElementById('etl-result-code').innerText  = code || '';
+
+    etlRenderPreview(res.preview);
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function etlShowError(msg) {
+    var card = document.getElementById('etl-result-card');
+    card.className = 'card result-card error';
+    card.style.display = 'block';
+    document.getElementById('etl-result-msg').innerText   = 'Something went wrong: ' + msg;
+    document.getElementById('etl-result-stats').innerHTML = '';
+    document.getElementById('etl-result-code').innerText  = '';
+    document.getElementById('etl-preview-thead').innerHTML = '';
+    document.getElementById('etl-preview-tbody').innerHTML = '';
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function etlHideResult() {
+    var card = document.getElementById('etl-result-card');
+    card.style.display = 'none';
+  }
+
+  function etlRenderPreview(data) {
+    if (!data || !data.length) return;
+    var cols = Object.keys(data[0]);
+    document.getElementById('etl-preview-thead').innerHTML =
+      '<tr>' + cols.map(function(c) { return '<th>' + etlEsc(c) + '</th>'; }).join('') + '</tr>';
+    document.getElementById('etl-preview-tbody').innerHTML =
+      data.map(function(row) {
+        return '<tr>' + cols.map(function(c) {
+          return '<td>' + (row[c] == null ? '' : etlEsc(String(row[c]))) + '</td>';
+        }).join('') + '</tr>';
+      }).join('');
+  }
+
+  // ── Utilities ──────────────────────────────────────────────────
+  function etlCheckDataset() {
+    if (!window.appState.activeDatasetId) {
+      alert('Please select a dataset first using the "Active Dataset" dropdown at the top of the page.');
+      return false;
+    }
+    // If columns haven't loaded yet, kick off a load — the panel will refresh when done
+    if (!etlCols.length) etlLoadCols();
+    return true;
+  }
+
+  function etlExtractError(msg) {
+    try {
+      var obj = JSON.parse(msg);
+      return obj.detail || msg;
+    } catch (_) { return msg; }
+  }
+
+  // Init
+  etlLoadCols();
+</script>

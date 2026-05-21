@@ -1,0 +1,135 @@
+<div>
+  <h2>Data Cleansing</h2>
+  <button class="btn btn-primary" onclick="scanDataset()">Scan for Issues</button>
+  <div id="scan-status" style="margin-top:10px; font-weight:bold;"></div>
+
+  <div id="ai-explanation" class="card" style="display:none; margin-top:20px;">
+    <h3>AI Analysis</h3>
+    <p id="ai-text" style="font-size: 1.1rem; line-height: 1.5;"></p>
+  </div>
+
+  <div id="issues-list" style="margin-top:20px;"></div>
+
+  <script>
+    window.addEventListener('dataset-changed', () => {
+      document.getElementById('issues-list').innerHTML = '';
+      document.getElementById('ai-explanation').style.display = 'none';
+      document.getElementById('scan-status').innerText = '';
+    });
+
+    async function scanDataset() {
+      if (!window.appState.activeDatasetId) {
+        alert("Please select a dataset first.");
+        return;
+      }
+      
+      const status = document.getElementById('scan-status');
+      status.innerText = "Scanning dataset...";
+      status.style.color = "var(--text)";
+      
+      try {
+        const res = await window.api.post(`/cleanse/scan/${window.appState.activeDatasetId}`, {});
+        status.innerText = "Scan complete!";
+        status.style.color = "var(--success)";
+        
+        document.getElementById('ai-explanation').style.display = 'block';
+        document.getElementById('ai-text').innerText = res.ai_explanation;
+        
+        renderIssues(res.raw_report);
+      } catch (err) {
+        status.innerText = "Error: " + err.message;
+        status.style.color = "var(--danger)";
+      }
+    }
+
+    function renderIssues(report) {
+      const container = document.getElementById('issues-list');
+      container.innerHTML = '<h3>Detected Issues</h3>';
+      
+      if (report.duplicate_rows > 0) {
+        container.appendChild(createIssueCard(
+          "Duplicate Rows", 
+          `Found ${report.duplicate_rows} duplicate rows`, 
+          "warning", 
+          [{ type: "drop_duplicates" }]
+        ));
+      }
+      
+      report.null_report.forEach(item => {
+        if (item.null_count > 0) {
+          container.appendChild(createIssueCard(
+            `Missing Values: ${item.column}`, 
+            `${item.null_count} nulls (${item.null_pct.toFixed(1)}%)`, 
+            item.null_pct > 20 ? "danger" : "warning",
+            [
+              { type: "drop_nulls", column: item.column },
+              { type: "fill_mean", column: item.column },
+              { type: "fill_median", column: item.column }
+            ]
+          ));
+        }
+      });
+      
+      report.outlier_report.forEach(item => {
+        container.appendChild(createIssueCard(
+          `Outliers: ${item.column}`, 
+          `Found ${item.outlier_count} outliers using ${item.method}`, 
+          "warning",
+          [{ type: "remove_outliers", column: item.column }]
+        ));
+      });
+      
+      report.format_issues.forEach(item => {
+        container.appendChild(createIssueCard(
+          `Format Issue: ${item.column}`, 
+          item.issue, 
+          "warning",
+          [{ type: "standardize_format", column: item.column }]
+        ));
+      });
+      
+      if (container.children.length === 1) {
+        container.innerHTML += '<p class="text-muted">No issues found!</p>';
+      }
+    }
+
+    function createIssueCard(title, description, severity, actions) {
+      const div = document.createElement('div');
+      div.className = "card";
+      
+      let actionsHtml = actions.map(act => {
+        const btnText = act.type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+        return `<button class="btn btn-secondary" onclick='applyFix(${JSON.stringify(act)})'>${btnText}</button>`;
+      }).join(' ');
+
+      div.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h4 style="margin-bottom:5px;">${title} <span class="badge badge-${severity}">${severity.toUpperCase()}</span></h4>
+            <p class="text-muted">${description}</p>
+          </div>
+          <div style="display:flex; gap:10px;">
+            ${actionsHtml}
+          </div>
+        </div>
+      `;
+      return div;
+    }
+
+    async function applyFix(operation) {
+      if (!window.appState.activeDatasetId) return;
+      
+      try {
+        const payload = {
+          dataset_id: window.appState.activeDatasetId,
+          operations: [operation]
+        };
+        const res = await window.api.post('/cleanse/apply', payload);
+        alert(`Fix applied!\nRows before: ${res.rows_before} → after: ${res.rows_after}\n\nCode:\n${res.python_code}`);
+        scanDataset();
+      } catch (err) {
+        alert("Error applying fix: " + err.message);
+      }
+    }
+  </script>
+</div>

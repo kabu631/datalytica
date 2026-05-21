@@ -1,0 +1,16 @@
+fastapi==0.136.1
+uvicorn[standard]==0.47.0
+sqlalchemy==2.0.49
+pandas==3.0.3
+scipy==1.17.1
+numpy==2.4.4
+openpyxl==3.1.5
+plotly==6.7.0
+python-multipart==0.0.28
+chardet==7.4.3
+httpx==0.28.1
+python-docx==1.2.0
+reportlab==4.5.1
+aiofiles==25.1.0
+requests==2.34.2
+python-dotenv==1.2.2

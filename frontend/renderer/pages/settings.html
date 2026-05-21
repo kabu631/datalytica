@@ -1,0 +1,230 @@
+<div style="max-width: 600px; margin: 0 auto;">
+  <h2>Settings</h2>
+
+  <!-- License Status -->
+  <div class="card" style="border-left: 4px solid var(--warning);">
+    <h3>License Management</h3>
+    
+    <div class="form-group">
+      <label>Machine ID (Provide this to your vendor)</label>
+      <div style="display:flex; gap:10px;">
+        <input type="text" id="machine-id" class="form-control" readonly style="background-color: var(--surface);">
+        <button class="btn btn-secondary" onclick="window.copyText(document.getElementById('machine-id').value)">Copy</button>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label>License Key</label>
+      <input type="text" id="license-key" class="form-control" placeholder="DL-...">
+    </div>
+    
+    <button class="btn btn-primary" onclick="validateLicense()">Apply License</button>
+    <div id="license-status-msg" style="margin-top:10px; font-weight:bold;"></div>
+  </div>
+
+  <!-- AI Configuration -->
+  <div class="card">
+    <h3>AI Configuration</h3>
+    <p style="color:var(--muted); font-size:0.85em; margin-bottom:12px;">Settings are saved to the backend database and applied immediately.</p>
+
+    <div class="form-group">
+      <label>AI Provider</label>
+      <select id="ai-provider" class="form-control" onchange="toggleAiFields()">
+        <option value="deepseek">DeepSeek (Cloud — recommended)</option>
+        <option value="ollama">Ollama (Local)</option>
+      </select>
+    </div>
+
+    <div class="form-group" id="api-key-group">
+      <label>DeepSeek API Key</label>
+      <input type="password" id="api-key" class="form-control" placeholder="sk-...">
+      <small id="key-hint" style="color:var(--muted);"></small>
+    </div>
+
+    <div id="ollama-fields" style="display:none;">
+      <div class="form-group">
+        <label>Ollama Model</label>
+        <input type="text" id="ollama-model" class="form-control" value="mistral" placeholder="mistral">
+      </div>
+      <div class="form-group">
+        <label>Ollama API URL</label>
+        <input type="text" id="ollama-url" class="form-control" placeholder="http://127.0.0.1:11434/api/generate">
+      </div>
+    </div>
+
+    <button class="btn btn-secondary" onclick="saveAiSettings()">Save AI Settings</button>
+    <div id="ai-status-msg" style="margin-top:10px; font-weight:bold;"></div>
+  </div>
+
+  <script>
+    async function loadMachineId() {
+      try {
+        const res = await window.api.get('/license/machine-id');
+        document.getElementById('machine-id').value = res.machine_id;
+      } catch (err) {
+        console.error("Failed to fetch machine ID");
+      }
+    }
+
+    async function validateLicense() {
+      const key = document.getElementById('license-key').value.trim();
+      if (!key) return;
+      
+      const status = document.getElementById('license-status-msg');
+      status.innerText = "Validating...";
+      
+      try {
+        // We use fetch manually here instead of window.api.post because the middleware drops 403 globally
+        // Wait, the middleware explicitly allows /api/license
+        const res = await window.api.post('/license/validate', { key: key });
+        
+        status.innerText = `License Valid! Plan: ${res.plan}, Expiry: ${res.expiry}`;
+        status.style.color = "var(--success)";
+        
+        // Refresh the global badge
+        window.checkLicense();
+      } catch (err) {
+        status.innerText = "Error: " + err.message;
+        status.style.color = "var(--danger)";
+      }
+    }
+
+    function toggleAiFields() {
+      const provider = document.getElementById('ai-provider').value;
+      document.getElementById('api-key-group').style.display  = provider === 'deepseek' ? 'block' : 'none';
+      document.getElementById('ollama-fields').style.display  = provider === 'ollama'   ? 'block' : 'none';
+    }
+
+    async function loadAiSettings() {
+      try {
+        const cfg = await window.api.get('/config/');
+        if (cfg.AI_PROVIDER) {
+          document.getElementById('ai-provider').value = cfg.AI_PROVIDER;
+          toggleAiFields();
+        }
+        if (cfg.HAS_DEEPSEEK_KEY) {
+          document.getElementById('key-hint').innerText = 'API key is set. Enter a new one to replace it.';
+        }
+        if (cfg.OLLAMA_MODEL) document.getElementById('ollama-model').value = cfg.OLLAMA_MODEL;
+        if (cfg.OLLAMA_GENERATE_URL) document.getElementById('ollama-url').value = cfg.OLLAMA_GENERATE_URL;
+      } catch (e) {
+        console.warn("Could not load AI config:", e);
+      }
+    }
+
+    async function saveAiSettings() {
+      const status = document.getElementById('ai-status-msg');
+      const payload = {
+        ai_provider:      document.getElementById('ai-provider').value,
+        deepseek_api_key: document.getElementById('api-key').value,
+        ollama_model:     document.getElementById('ollama-model').value || 'mistral',
+        ollama_url:       document.getElementById('ollama-url').value
+      };
+      try {
+        await window.api.post('/config/', payload);
+        status.style.color = 'var(--success)';
+        status.innerText = 'AI settings saved!';
+        document.getElementById('api-key').value = '';
+        document.getElementById('key-hint').innerText = payload.deepseek_api_key ? 'API key updated.' : document.getElementById('key-hint').innerText;
+        setTimeout(() => status.innerText = '', 3000);
+      } catch (err) {
+        status.style.color = 'var(--danger)';
+        status.innerText = 'Error: ' + err.message;
+      }
+    }
+
+    // Init
+    loadMachineId();
+    loadAiSettings();
+  </script>
+
+  <!-- Developer / Admin Tools -->
+  <details class="card" style="border-left: 4px solid #888; margin-top: 20px;">
+    <summary style="cursor:pointer; font-weight:bold; padding: 4px 0;">Developer Tools</summary>
+    <p style="color: var(--muted); font-size: 0.85em; margin-top: 8px;">
+      Admin-only. Requires the master SECRET embedded in the backend.
+    </p>
+
+    <div class="form-group" style="margin-top: 12px;">
+      <label>Master SECRET</label>
+      <input type="password" id="dev-secret" class="form-control" placeholder="DL_...">
+    </div>
+
+    <div style="display:flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;">
+      <button class="btn btn-secondary" onclick="activateAdminMode()">Activate Admin Mode (This Machine)</button>
+    </div>
+
+    <hr style="border-color: var(--border);">
+    <h4>Generate Customer Key</h4>
+    <div class="form-group">
+      <label>Customer Machine ID</label>
+      <input type="text" id="gen-machine-id" class="form-control" placeholder="16-char hex">
+    </div>
+    <div style="display:flex; gap:10px;">
+      <div class="form-group" style="flex:1;">
+        <label>Plan</label>
+        <select id="gen-plan" class="form-control">
+          <option value="pro">Pro</option>
+          <option value="basic">Basic</option>
+          <option value="enterprise">Enterprise</option>
+        </select>
+      </div>
+      <div class="form-group" style="flex:1;">
+        <label>Duration (days)</label>
+        <input type="number" id="gen-days" class="form-control" value="365" min="1">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="generateCustomerKey()">Generate Key</button>
+    <div style="margin-top: 10px;">
+      <label>Generated Key (send this to customer)</label>
+      <div style="display:flex; gap:10px;">
+        <input type="text" id="generated-key-output" class="form-control" readonly style="background-color: var(--surface); font-family: monospace; font-size: 0.8em;">
+        <button class="btn btn-secondary" onclick="window.copyText(document.getElementById('generated-key-output').value)">Copy</button>
+      </div>
+    </div>
+    <div id="dev-status-msg" style="margin-top:10px; font-weight:bold;"></div>
+  </details>
+
+  <script>
+    async function activateAdminMode() {
+      const secret = document.getElementById('dev-secret').value.trim();
+      if (!secret) { alert("Enter the master SECRET first."); return; }
+      const msg = document.getElementById('dev-status-msg');
+      msg.style.color = "var(--muted)";
+      msg.innerText = "Activating...";
+      try {
+        await window.api.post('/license/activate-admin', { secret });
+        msg.style.color = "var(--success)";
+        msg.innerText = "Admin mode activated. License checks are now bypassed on this machine.";
+        window.checkLicense();
+      } catch (err) {
+        msg.style.color = "var(--danger)";
+        msg.innerText = "Error: " + err.message;
+      }
+    }
+
+    async function generateCustomerKey() {
+      const secret = document.getElementById('dev-secret').value.trim();
+      const machine_id = document.getElementById('gen-machine-id').value.trim();
+      const plan = document.getElementById('gen-plan').value;
+      const days = parseInt(document.getElementById('gen-days').value);
+      const msg = document.getElementById('dev-status-msg');
+
+      if (!secret || !machine_id) {
+        alert("Enter SECRET and Customer Machine ID.");
+        return;
+      }
+      msg.style.color = "var(--muted)";
+      msg.innerText = "Generating...";
+      try {
+        const res = await window.api.post('/license/generate', { secret, machine_id, plan, days });
+        document.getElementById('generated-key-output').value = res.key;
+        msg.style.color = "var(--success)";
+        msg.innerText = `Key generated — valid until ${res.expiry}`;
+      } catch (err) {
+        msg.style.color = "var(--danger)";
+        msg.innerText = "Error: " + err.message;
+      }
+    }
+  </script>
+</div>

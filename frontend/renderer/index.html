@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Datalytica</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  
+  <!-- Frontend CDN Libraries -->
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+</head>
+<body>
+  <!-- Titlebar -->
+  <div class="titlebar">
+    <div class="window-controls">
+      <button onclick="window.electron.minimize()">—</button>
+      <button onclick="window.electron.maximize()">□</button>
+      <button onclick="window.electron.close()" class="btn-danger">✕</button>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h1>Datalytica</h1>
+    <div class="nav-links">
+      <a href="#dashboard" class="nav-item">Dashboard</a>
+      <a href="#ingest" class="nav-item">Ingest</a>
+      <a href="#cleanse" class="nav-item">Cleanse</a>
+      <a href="#etl" class="nav-item">ETL</a>
+      <a href="#eda" class="nav-item">EDA</a>
+      <a href="#charts" class="nav-item">Charts</a>
+      <a href="#narrative" class="nav-item">Narrative</a>
+      <a href="#settings" class="nav-item">Settings</a>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="topbar">
+      <div>
+        <label for="global-dataset-select">Active Dataset: </label>
+        <select id="global-dataset-select">
+          <option value="">-- Select a dataset --</option>
+        </select>
+        <button class="btn btn-secondary" onclick="refreshDatasets()">Refresh</button>
+      </div>
+      <div>
+        <span id="license-badge" class="badge badge-warning">Checking License...</span>
+      </div>
+    </div>
+    <div id="app-content" class="page-container">
+      <!-- Pages will be injected here -->
+    </div>
+  </div>
+
+  <script>
+    window.appState = {
+      activeDatasetId: null,
+      apiBase: null
+    };
+    window.electron.getApiBase().then(base => { window.appState.apiBase = base; });
+
+    // Clipboard helper — navigator.clipboard fails on file:// in some Electron versions
+    window.copyText = function(text) {
+      if (!text) return;
+      navigator.clipboard.writeText(text).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+      });
+    };
+
+    async function checkLicense() {
+      try {
+        const data = await window.api.get('/license/status');
+        const badge = document.getElementById('license-badge');
+        if (data.valid) {
+          badge.className = "badge badge-success";
+          badge.innerText = `Licensed (${data.plan})`;
+        } else {
+          badge.className = "badge badge-danger";
+          badge.innerText = data.error || "Unlicensed";
+        }
+      } catch (err) {
+        // If 403, we get the text from preload which has detail
+        document.getElementById('license-badge').className = "badge badge-danger";
+        document.getElementById('license-badge').innerText = "License Required";
+        if (!window.location.hash.includes("settings")) {
+          window.location.hash = "#settings";
+        }
+      }
+    }
+
+    async function refreshDatasets() {
+      try {
+        const datasets = await window.api.get('/ingest/datasets');
+        const select = document.getElementById('global-dataset-select');
+        select.innerHTML = '<option value="">-- Select a dataset --</option>';
+        datasets.forEach(ds => {
+          const option = document.createElement('option');
+          option.value = ds.id;
+          option.innerText = `${ds.name} (ID: ${ds.id})`;
+          if (window.appState.activeDatasetId == ds.id) {
+            option.selected = true;
+          }
+          select.appendChild(option);
+        });
+      } catch (e) {
+        console.error("Error loading datasets", e);
+      }
+    }
+
+    document.getElementById('global-dataset-select').addEventListener('change', (e) => {
+      window.appState.activeDatasetId = e.target.value;
+      window.dispatchEvent(new Event('dataset-changed'));
+    });
+
+    // Router
+    async function loadPage(pageName) {
+      try {
+        const res = await fetch(`pages/${pageName}.html`);
+        if (res.ok) {
+          const html = await res.text();
+          document.getElementById('app-content').innerHTML = html;
+          // Re-evaluate scripts
+          const scripts = document.getElementById('app-content').querySelectorAll('script');
+          scripts.forEach(oldScript => {
+            const newScript = document.createElement('script');
+            Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+            newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+            oldScript.parentNode.replaceChild(newScript, oldScript);
+          });
+        } else {
+          document.getElementById('app-content').innerHTML = `<h2>404 - Page Not Found</h2>`;
+        }
+      } catch (e) {
+        document.getElementById('app-content').innerHTML = `<h2>Error loading page: ${e.message}</h2>`;
+      }
+    }
+
+    function handleRoute() {
+      let hash = window.location.hash.substring(1);
+      if (!hash) {
+        hash = 'dashboard';
+        window.location.hash = hash;
+      }
+      
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      const activeLink = document.querySelector(`.nav-item[href="#${hash}"]`);
+      if (activeLink) activeLink.classList.add('active');
+
+      loadPage(hash);
+    }
+
+    // Initialize
+    window.addEventListener('hashchange', handleRoute);
+    checkLicense();
+    refreshDatasets();
+    handleRoute();
+  </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+{
+  "name": "datalytica",
+  "version": "1.0.0",
+  "description": "Datalytica — AI-powered desktop analytics platform",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder"
+  },
+  "keywords": [
+    "analytics",
+    "data",
+    "electron",
+    "AI"
+  ],
+  "author": "Datalytica",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3"
+  },
+  "dependencies": {
+    "axios": "^1.7.2"
+  },
+  "build": {
+    "appId": "com.datalytica.app",
+    "productName": "DataLytica",
+    "directories": {
+      "output": "../dist"
+    },
+    "files": [
+      "**/*",
+      "!node_modules/.cache"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "extraResources": [
+      {
+        "from": "../dist/datalytica-backend/",
+        "to": "backend/"
+      }
+    ],
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  }
+}

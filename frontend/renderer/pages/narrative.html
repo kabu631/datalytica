@@ -1,0 +1,133 @@
+<div style="display:flex; height:100%; flex-direction:column;">
+  <h2>AI Narrative Report</h2>
+
+  <div style="display:flex; gap:20px; flex:1;">
+    
+    <!-- Left Sidebar: Controls -->
+    <div style="width:300px; display:flex; flex-direction:column; gap:20px;">
+      
+      <div class="card">
+        <h3>Report Generation</h3>
+        
+        <div class="form-group">
+          <label>Report Title</label>
+          <input type="text" id="report-title" class="form-control" value="Comprehensive Data Report">
+        </div>
+
+        <div class="form-group">
+          <label>Tone</label>
+          <select id="report-tone" class="form-control">
+            <option value="executive">Executive (High-Level Business)</option>
+            <option value="technical">Technical (Detailed Analytical)</option>
+            <option value="simple">Simple (Plain English)</option>
+          </select>
+        </div>
+        
+        <button class="btn btn-primary" onclick="generateReport()" style="width:100%;">Generate Narrative</button>
+        <div id="gen-status" style="margin-top:10px; font-weight:bold; font-size:0.9rem;"></div>
+      </div>
+
+      <!-- Export Controls (Hidden initially) -->
+      <div class="card" id="export-controls" style="display:none;">
+        <h3>Export Options</h3>
+        <button class="btn btn-secondary" onclick="exportReport('pdf')" style="width:100%; margin-bottom:10px;">Download PDF</button>
+        <button class="btn btn-secondary" onclick="exportReport('docx')" style="width:100%; margin-bottom:10px;">Download Word (DOCX)</button>
+        <button class="btn btn-secondary" onclick="exportReport('markdown')" style="width:100%;">Download Markdown</button>
+        <div id="export-status" style="margin-top:10px; font-size:0.9rem; color:var(--text-muted);"></div>
+      </div>
+
+    </div>
+
+    <!-- Right Area: Preview -->
+    <div class="card" style="flex:1; display:flex; flex-direction:column; overflow-y:auto;">
+      <h3>Preview</h3>
+      <div id="report-preview" style="line-height: 1.6; font-size: 1.1rem; padding: 20px;">
+        <p class="text-muted">Fill out the controls and click "Generate Narrative" to view the AI report here.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let currentReportId = null;
+
+    window.addEventListener('dataset-changed', () => {
+      document.getElementById('report-preview').innerHTML = '<p class="text-muted">Fill out the controls and click "Generate Narrative" to view the AI report here.</p>';
+      document.getElementById('export-controls').style.display = 'none';
+      document.getElementById('gen-status').innerText = '';
+      currentReportId = null;
+    });
+
+    async function generateReport() {
+      if (!window.appState.activeDatasetId) {
+        alert("Please select a dataset first.");
+        return;
+      }
+      
+      const status = document.getElementById('gen-status');
+      status.innerText = "Generating narrative... (May take up to 30 seconds)";
+      status.style.color = "var(--text)";
+      
+      try {
+        const payload = {
+          dataset_id: parseInt(window.appState.activeDatasetId),
+          report_title: document.getElementById('report-title').value,
+          tone: document.getElementById('report-tone').value,
+          focus_columns: []
+        };
+        const res = await window.api.post('/narrative/generate', payload);
+        
+        currentReportId = res.report_id;
+        
+        // Parse markdown natively using the marked.js CDN
+        document.getElementById('report-preview').innerHTML = marked.parse(res.content_markdown);
+        document.getElementById('export-controls').style.display = 'block';
+        
+        status.innerText = "Generation complete!";
+        status.style.color = "var(--success)";
+      } catch (err) {
+        status.innerText = "Error: " + err.message;
+        status.style.color = "var(--danger)";
+      }
+    }
+
+    async function exportReport(format) {
+      if (!currentReportId) return;
+      
+      const status = document.getElementById('export-status');
+      status.innerText = "Exporting...";
+      
+      try {
+        // Fetch binary directly since window.api.post parses JSON
+        const res = await fetch(`${window.appState.apiBase}/api/narrative/export`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ report_id: currentReportId, format: format })
+        });
+        
+        if (!res.ok) throw new Error(await res.text());
+        
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        
+        // Get filename from header if possible, else fallback
+        const disposition = res.headers.get('Content-Disposition');
+        let filename = `${document.getElementById('report-title').value}.${format}`;
+        if (disposition && disposition.indexOf('filename=') !== -1) {
+            filename = disposition.split('filename=')[1].replace(/["']/g, "");
+        }
+        
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        
+        status.innerText = `Downloaded as ${format.toUpperCase()}`;
+      } catch (err) {
+        status.innerText = "Export failed: " + err.message;
+      }
+    }
+  </script>
+</div>

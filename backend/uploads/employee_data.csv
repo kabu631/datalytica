@@ -1,0 +1,301 @@
+employee_id,name,department,job_level,salary,years_experience,city,performance_score,is_remote,join_date,satisfaction_rating
+EMP-0001,Rohan Brown,Sales,Director,124954.04,15,London,4.3,True,2019-06-06,2
+EMP-0002,Wei Smith,Legal,Lead,84261.22,6,Berlin,4.5,True,2022-04-01,2
+EMP-0003,Wei Patel,Legal,Lead,92965.96,16,Tokyo,4.1,True,2021-02-08,1
+EMP-0004,Priya Sharma,Operations,Manager,101140.61,3,Tokyo,4.2,False,2021-05-27,10
+EMP-0005,Anya Jones,Finance,Director,161692.98,10,Toronto,4.4,False,2021-05-19,7
+EMP-0006,Liam Williams,Operations,Director,171388.68,6,Berlin,3.3,True,2021-11-08,5
+EMP-0007,Marcus Jones,Finance,Manager,124049.73,3,Toronto,3.6,False,2021-10-13,7
+EMP-0008,Sam Jones,Legal,Junior,111204.66,4,Toronto,2.5,True,2018-04-27,
+EMP-0009,Carlos Johnson,Sales,Director,133031.42,22,Sydney,3.6,True,2022-07-27,6
+EMP-0010,Jordan Miller,Operations,Director,150431.15,25,Tokyo,3.0,False,2021-11-21,5
+EMP-0011,Chris Garcia,Legal,Director,136508.62,0,Toronto,3.5,True,2022-08-28,8
+EMP-0012,Riley Sharma,Legal,Director,173000.23,5,New York,3.0,False,2019-01-19,2
+EMP-0013,Casey Garcia,Engineering,Lead,86548.04,5,Sydney,3.0,True,2018-03-24,3
+EMP-0014,Morgan Garcia,Legal,Director,153474.09,15,Sydney,3.2,True,2020-01-05,9
+EMP-0015,Priya Garcia,Marketing,Manager,96499.76,13,Kathmandu,2.7,False,2021-09-21,4
+EMP-0016,Liam Davis,Marketing,Manager,116841.95,24,London,3.3,True,2018-08-24,1
+EMP-0017,Anya Garcia,Engineering,Director,168596.97,25,Sydney,4.2,False,2018-02-21,5
+EMP-0018,Marcus Sharma,HR,Junior,33900.08,10,New York,3.2,True,2018-12-10,2
+EMP-0019,Morgan Williams,Marketing,Director,154252.81,21,New York,3.2,False,2021-08-18,7
+EMP-0020,Nadia Brown,Operations,Senior,64886.59,5,Kathmandu,3.7,False,2018-05-26,9
+EMP-0021,Rohan Johnson,HR,Lead,99187.82,0,Toronto,3.2,True,2022-01-16,
+EMP-0022,Morgan Jones,Operations,Junior,34757.8,9,Toronto,3.8,False,2021-05-28,5
+EMP-0023,Casey Jones,HR,Lead,106096.41,5,Berlin,3.1,False,2019-08-29,9
+EMP-0024,Aisha Sharma,Engineering,Manager,131989.74,1,Sydney,3.4,True,2021-05-07,
+EMP-0025,Riley Brown,Sales,Mid,63212.52,11,Sydney,3.9,False,2018-11-27,3
+EMP-0026,Marcus Johnson,Marketing,Junior,32289.01,1,Kathmandu,5.0,True,2020-08-03,9
+EMP-0027,Morgan Brown,Sales,Junior,32513.85,10,Kathmandu,2.8,False,2021-06-23,5
+EMP-0028,Priya Miller,HR,Senior,82240.27,18,London,4.4,True,2020-01-18,10
+EMP-0029,Sofia Davis,Sales,Mid,64034.52,20,Tokyo,2.1,False,2022-12-04,6
+EMP-0030,Casey Sharma,Legal,Senior,78359.14,20,London,4.1,False,2022-10-26,5
+EMP-0031,Nadia Brown,Operations,Director,123281.89,0,New York,4.2,False,2020-04-10,10
+EMP-0032,Drew Williams,Finance,Manager,114272.57,11,Tokyo,2.6,True,2022-02-11,10
+EMP-0033,Riley Williams,HR,Senior,78815.02,25,Sydney,4.7,True,2020-07-03,3
+EMP-0034,Jamie Garcia,Operations,Director,146076.19,7,London,3.4,True,2018-05-10,4
+EMP-0035,Priya Johnson,Operations,Mid,58143.48,12,Berlin,2.6,False,2021-08-22,
+EMP-0036,Nadia Johnson,Legal,Director,133745.7,5,Sydney,3.7,False,2020-01-20,7
+EMP-0037,Casey Davis,HR,Mid,58110.18,11,London,2.6,True,2022-12-13,9
+EMP-0038,Taylor Brown,Engineering,Manager,121812.99,5,Tokyo,3.6,False,2022-01-10,10
+EMP-0039,Casey Patel,Operations,Junior,36491.23,6,Sydney,2.5,True,2018-03-31,4
+EMP-0040,Riley Sharma,Marketing,Director,147708.0,4,Tokyo,2.9,True,2019-06-14,
+EMP-0041,Chris Miller,Operations,Director,156057.72,2,Sydney,3.7,True,2018-12-17,8
+EMP-0042,Priya Davis,Legal,Manager,129599.94,21,Sydney,4.6,True,2022-01-24,3
+EMP-0043,Taylor Williams,Marketing,Lead,90376.63,6,Tokyo,1.8,True,2021-05-26,3
+EMP-0044,Alex Miller,Legal,Manager,115646.49,15,Sydney,3.3,False,2021-01-10,10
+EMP-0045,Wei Williams,Sales,Junior,39517.0,25,Kathmandu,2.1,False,2018-07-21,10
+EMP-0046,Sam Smith,Legal,Mid,66771.88,19,Berlin,3.7,True,2019-06-13,7
+EMP-0047,Wei Patel,Finance,Manager,296053.38,20,Kathmandu,3.9,False,2018-11-14,2
+EMP-0048,Sam Miller,Legal,Manager,112136.71,8,Sydney,4.9,False,2022-03-28,7
+EMP-0049,Taylor Brown,Marketing,Senior,80522.81,9,Tokyo,2.3,True,2022-10-19,3
+EMP-0050,Aisha Smith,Engineering,Mid,57933.56,25,Toronto,2.9,True,2018-11-27,1
+EMP-0051,Aisha Miller,Legal,Mid,57126.71,2,Sydney,4.0,False,2022-01-24,1
+EMP-0052,Sam Sharma,Operations,Manager,96028.37,5,Kathmandu,3.7,True,2018-01-23,8
+EMP-0053,Morgan Jones,Engineering,Manager,115964.11,19,Toronto,3.6,False,2018-11-20,1
+EMP-0054,Morgan Johnson,Sales,Director,141128.01,16,Sydney,3.7,False,2021-12-13,
+EMP-0055,Alex Jones,Operations,Manager,133760.39,8,London,3.8,False,2021-03-24,7
+EMP-0056,Marcus Patel,Finance,Junior,37570.83,10,Kathmandu,5.0,False,2019-06-13,9
+EMP-0057,Alex Davis,HR,Manager,114779.72,10,New York,4.4,False,2022-11-02,10
+EMP-0058,Liam Sharma,Engineering,Lead,99311.82,21,Sydney,3.3,True,2020-04-25,6
+EMP-0059,Priya Garcia,Operations,Senior,71197.73,21,London,3.5,False,2020-09-03,3
+EMP-0060,Chris Jones,Marketing,Director,157254.01,15,London,2.8,True,2022-02-16,4
+EMP-0061,Alex Sharma,Marketing,Mid,65149.36,24,New York,4.9,False,2021-06-12,8
+EMP-0062,Anya Jones,Sales,Manager,107378.34,18,Tokyo,4.6,True,2019-01-11,8
+EMP-0063,Riley Davis,Legal,Manager,99142.82,13,New York,2.5,False,2022-10-30,7
+EMP-0064,Rohan Jones,Sales,Director,119471.44,12,London,3.6,False,2020-01-12,6
+EMP-0065,Aisha Jones,Marketing,Senior,77890.36,11,Tokyo,3.8,True,2020-01-19,6
+EMP-0066,Wei Miller,Finance,Mid,68293.99,3,London,4.3,True,2021-02-12,4
+EMP-0067,Priya Davis,Legal,Director,127374.69,5,Kathmandu,3.1,False,2020-12-30,9
+EMP-0068,Jamie Davis,Finance,Manager,95599.21,5,Toronto,3.7,True,2022-07-26,
+EMP-0069,Liam Patel,HR,Director,137740.77,17,London,2.1,True,2018-09-07,7
+EMP-0070,Morgan Miller,Legal,Senior,74403.27,15,Sydney,3.0,False,2022-12-28,8
+EMP-0071,Morgan Johnson,HR,Director,172569.29,20,London,3.8,False,2020-04-09,10
+EMP-0072,Carlos Garcia,Marketing,Senior,73256.35,8,Berlin,2.8,False,2019-07-11,7
+EMP-0073,Riley Miller,HR,Mid,152386.5,23,New York,3.6,True,2019-03-09,2
+EMP-0074,Jamie Patel,Engineering,Lead,288730.83,12,London,4.1,True,2018-08-02,2
+EMP-0075,Jordan Garcia,Operations,Lead,87637.34,9,Toronto,3.1,False,2018-03-01,3
+EMP-0076,Marcus Williams,Legal,Lead,93318.97,8,Sydney,3.6,False,2021-11-30,3
+EMP-0077,Chris Johnson,Operations,Director,154607.66,16,Tokyo,2.9,False,2021-01-11,8
+EMP-0078,Drew Davis,Sales,Lead,85853.05,0,Sydney,2.7,True,2019-12-07,3
+EMP-0079,Liam Brown,Operations,Lead,110590.47,0,Tokyo,3.6,False,2021-01-28,1
+EMP-0080,Morgan Miller,HR,Mid,50341.93,12,Berlin,2.1,True,2019-06-24,4
+EMP-0081,Morgan Williams,Finance,Manager,129033.3,9,London,2.9,False,2022-10-15,4
+EMP-0082,Alex Williams,Engineering,Director,144499.21,22,New York,2.7,True,2019-10-20,4
+EMP-0083,Priya Miller,Marketing,Junior,33699.6,14,Kathmandu,3.4,False,2019-03-22,8
+EMP-0084,Jamie Miller,Sales,Lead,101589.65,2,New York,2.9,False,2018-04-26,3
+EMP-0085,Carlos Brown,Marketing,Mid,66455.38,12,Berlin,3.7,True,2020-02-29,4
+EMP-0086,Drew Garcia,Marketing,Lead,102971.62,21,London,3.1,True,2020-03-08,8
+EMP-0087,Sam Johnson,Operations,Manager,116420.76,20,London,3.3,False,2021-09-28,
+EMP-0088,Jordan Patel,Sales,Junior,32093.04,3,Toronto,4.2,False,2018-01-20,4
+EMP-0089,Liam Williams,Operations,Manager,100319.65,7,Berlin,3.7,True,2018-05-04,1
+EMP-0090,Carlos Brown,Marketing,Lead,84876.29,25,New York,3.8,False,2022-07-09,6
+EMP-0091,Nadia Williams,Sales,Director,126545.0,15,Sydney,3.2,False,2019-01-25,8
+EMP-0092,Morgan Sharma,Sales,Director,145230.1,19,London,2.5,False,2018-11-26,9
+EMP-0093,Liam Patel,Sales,Senior,79998.18,24,London,3.0,False,2021-06-24,1
+EMP-0094,Marcus Williams,Operations,Junior,38966.05,12,Sydney,2.9,False,2022-04-19,8
+EMP-0095,Jordan Brown,Sales,Lead,99572.54,16,New York,3.4,False,2022-11-25,3
+EMP-0096,Nadia Jones,Marketing,Junior,30195.44,12,New York,3.3,False,2021-07-02,9
+EMP-0097,Jordan Garcia,Marketing,Manager,375255.57,6,Sydney,2.5,False,2022-06-30,8
+EMP-0098,Morgan Jones,Legal,Senior,87577.49,19,New York,2.0,True,2022-02-13,1
+EMP-0099,Marcus Miller,Finance,Junior,31167.15,12,Berlin,3.9,True,2021-02-18,3
+EMP-0100,Riley Sharma,Legal,Director,151287.56,22,Tokyo,4.4,False,2018-12-09,2
+EMP-0101,Wei Garcia,Operations,Mid,58495.81,11,Sydney,4.3,True,2020-04-25,6
+EMP-0102,Aisha Smith,Finance,Manager,102912.84,23,Berlin,2.9,True,2020-07-06,8
+EMP-0103,Jamie Sharma,Sales,Manager,94217.31,9,Sydney,5.0,True,2018-02-15,6
+EMP-0104,Chris Jones,Engineering,Junior,36195.18,8,Toronto,3.6,False,2019-05-28,10
+EMP-0105,Nadia Johnson,Engineering,Manager,111091.12,23,Sydney,4.1,False,2022-08-20,8
+EMP-0106,Priya Garcia,Engineering,Director,164267.11,24,Toronto,3.8,False,2022-04-29,
+EMP-0107,Drew Sharma,HR,Junior,41927.01,20,New York,4.6,False,2018-04-22,7
+EMP-0108,Rohan Patel,Finance,Manager,100081.52,7,Sydney,2.0,True,2020-07-02,7
+EMP-0109,Jamie Johnson,Marketing,Lead,86932.19,4,Tokyo,3.0,False,2020-03-29,9
+EMP-0110,Nadia Brown,Legal,Director,126301.01,17,Sydney,4.3,True,2021-08-29,7
+EMP-0111,Liam Brown,Marketing,Junior,33477.6,21,Kathmandu,3.8,False,2020-01-20,7
+EMP-0112,Casey Davis,Finance,Director,120355.58,11,New York,3.3,True,2021-07-01,8
+EMP-0113,Drew Smith,Marketing,Director,139933.96,2,Kathmandu,3.7,True,2022-11-16,3
+EMP-0114,Anya Jones,Sales,Lead,93462.85,23,Sydney,3.7,False,2021-01-25,4
+EMP-0115,Riley Smith,Finance,Director,174568.92,21,Kathmandu,4.6,True,2019-06-09,1
+EMP-0116,Jamie Garcia,Legal,Director,153606.03,20,Toronto,3.6,True,2020-03-07,2
+EMP-0117,Rohan Sharma,Engineering,Senior,89772.31,7,New York,4.4,True,2020-09-20,6
+EMP-0118,Anya Jones,Marketing,Manager,136038.82,22,Kathmandu,3.4,False,2019-05-23,
+EMP-0119,Jordan Jones,HR,Director,127792.29,11,Tokyo,3.1,True,2019-07-20,9
+EMP-0120,Aisha Sharma,Finance,Senior,70517.48,12,Berlin,4.0,True,2022-02-04,2
+EMP-0121,Casey Patel,HR,Mid,59353.77,9,Sydney,4.1,True,2021-08-30,4
+EMP-0122,Casey Patel,Legal,Mid,53547.96,16,London,3.1,False,2022-04-28,7
+EMP-0123,Wei Miller,Engineering,Manager,116950.31,5,Kathmandu,2.8,False,2022-12-09,6
+EMP-0124,Alex Patel,Operations,Director,171262.0,24,Sydney,5.0,False,2019-01-15,3
+EMP-0125,Anya Patel,Finance,Manager,120443.93,7,Tokyo,3.2,False,2018-10-03,8
+EMP-0126,Alex Jones,Marketing,Lead,94192.04,6,Tokyo,2.8,True,2022-04-16,7
+EMP-0127,Priya Davis,Operations,Director,174341.63,2,London,4.4,False,2020-10-01,10
+EMP-0128,Nadia Patel,HR,Junior,38261.02,23,Sydney,5.0,True,2022-03-02,10
+EMP-0129,Aisha Sharma,Finance,Junior,36072.53,1,Toronto,3.9,True,2021-02-17,1
+EMP-0130,Wei Jones,Marketing,Senior,76936.62,24,Sydney,3.1,True,2018-12-08,8
+EMP-0131,Marcus Williams,Operations,Manager,133261.73,20,Tokyo,2.3,False,2021-11-27,10
+EMP-0132,Jamie Garcia,Sales,Lead,77396.84,22,Berlin,3.9,True,2018-07-05,8
+EMP-0133,Riley Miller,Operations,Director,125918.48,14,Sydney,3.3,False,2021-06-08,9
+EMP-0134,Casey Williams,Engineering,Mid,66819.56,21,Toronto,3.2,True,2022-11-16,3
+EMP-0135,Rohan Jones,HR,Senior,73035.55,14,New York,3.4,False,2018-01-09,4
+EMP-0136,Sofia Davis,HR,Lead,288198.12,15,Tokyo,4.0,False,2021-09-13,10
+EMP-0137,Riley Williams,Engineering,Manager,119904.49,17,New York,3.3,False,2018-04-12,4
+EMP-0138,Taylor Miller,Engineering,Mid,65534.24,19,London,4.6,True,2018-04-12,2
+EMP-0139,Jordan Johnson,Operations,Senior,82082.69,19,Toronto,2.6,False,2020-01-09,10
+EMP-0140,Drew Davis,Sales,Senior,90675.89,24,London,3.0,True,2018-05-14,9
+EMP-0141,Sofia Patel,Operations,Senior,73626.26,6,Toronto,3.1,False,2018-06-30,9
+EMP-0142,Rohan Patel,HR,Manager,130803.11,18,Tokyo,2.5,False,2018-09-24,6
+EMP-0143,Taylor Brown,HR,Mid,66190.6,9,Toronto,3.5,False,2021-07-05,
+EMP-0144,Drew Jones,HR,Junior,34423.09,20,Toronto,3.5,True,2021-11-15,4
+EMP-0145,Alex Williams,Sales,Senior,78950.69,0,London,4.0,False,2021-06-16,10
+EMP-0146,Casey Davis,Legal,Senior,91418.39,15,Toronto,4.0,False,2020-09-14,3
+EMP-0147,Sam Patel,HR,Lead,109900.44,16,Berlin,3.1,False,2018-02-09,9
+EMP-0148,Marcus Williams,Legal,Senior,65736.39,0,Sydney,4.7,False,2021-07-08,7
+EMP-0149,Morgan Davis,Marketing,Manager,98641.16,9,London,3.3,False,2020-04-28,
+EMP-0150,Sam Johnson,HR,Senior,70234.2,3,Tokyo,2.8,True,2022-05-13,1
+EMP-0151,Taylor Sharma,Legal,Lead,109078.41,10,Berlin,4.7,True,2018-10-22,6
+EMP-0152,Rohan Johnson,Marketing,Director,121046.94,16,Kathmandu,2.9,False,2018-04-02,5
+EMP-0153,Sam Brown,Engineering,Junior,37038.09,9,Kathmandu,4.8,False,2019-10-21,4
+EMP-0154,Alex Patel,Finance,Senior,86933.61,8,Sydney,3.7,True,2018-08-24,5
+EMP-0155,Drew Patel,Marketing,Manager,108914.0,4,Kathmandu,4.9,False,2018-05-27,3
+EMP-0156,Wei Miller,Engineering,Mid,47387.84,1,London,3.0,False,2018-06-27,1
+EMP-0157,Carlos Patel,Finance,Senior,73123.22,22,London,3.6,True,2022-03-29,
+EMP-0158,Chris Brown,Legal,Director,145223.45,21,London,2.0,False,2020-08-22,8
+EMP-0159,Sofia Johnson,Sales,Lead,83100.71,10,Kathmandu,3.9,False,2018-05-15,1
+EMP-0160,Taylor Garcia,HR,Mid,52959.66,18,Sydney,1.9,True,2020-04-11,2
+EMP-0161,Morgan Garcia,Legal,Senior,79732.37,13,London,3.5,False,2020-02-27,8
+EMP-0162,Nadia Davis,Legal,Lead,96919.6,22,New York,4.1,False,2022-02-24,2
+EMP-0163,Aisha Garcia,Sales,Manager,97796.77,9,Tokyo,3.8,True,2022-04-30,10
+EMP-0164,Casey Williams,Engineering,Mid,64724.74,24,Tokyo,3.4,False,2022-04-01,1
+EMP-0165,Liam Johnson,HR,Manager,118928.98,21,Sydney,4.0,True,2020-06-10,5
+EMP-0166,Jordan Smith,Finance,Manager,111284.69,9,Berlin,3.0,False,2021-01-30,
+EMP-0167,Wei Sharma,Engineering,Senior,89720.39,22,London,2.6,True,2020-02-22,7
+EMP-0168,Casey Williams,HR,Mid,50890.99,11,New York,2.9,True,2019-08-15,3
+EMP-0169,Carlos Patel,Operations,Junior,31765.94,21,Tokyo,1.3,True,2022-10-29,7
+EMP-0170,Rohan Smith,HR,Manager,112161.49,12,Sydney,4.4,False,2020-05-20,3
+EMP-0171,Nadia Davis,Legal,Director,132258.0,13,Berlin,4.4,False,2018-03-20,
+EMP-0172,Jamie Davis,Engineering,Manager,114687.45,4,Sydney,3.0,True,2022-10-27,9
+EMP-0173,Nadia Jones,Finance,Manager,97391.64,23,Sydney,2.9,True,2022-06-24,9
+EMP-0174,Priya Miller,Sales,Manager,127755.19,16,Kathmandu,2.5,False,2022-02-12,10
+EMP-0175,Riley Patel,Sales,Mid,47527.18,23,New York,3.0,False,2021-03-31,8
+EMP-0176,Jamie Jones,Legal,Director,153961.75,2,London,4.8,False,2022-10-11,2
+EMP-0177,Riley Jones,Sales,Senior,64176.09,5,Toronto,4.6,True,2022-07-14,6
+EMP-0178,Casey Davis,HR,Mid,64336.18,10,Toronto,2.8,False,2021-05-05,3
+EMP-0179,Jamie Johnson,Legal,Lead,85066.11,20,New York,4.0,True,2021-08-09,1
+EMP-0180,Aisha Davis,HR,Lead,93644.35,24,Kathmandu,4.4,True,2020-02-18,4
+EMP-0181,Marcus Garcia,Finance,Lead,76927.07,14,Toronto,3.0,False,2018-07-20,1
+EMP-0182,Nadia Miller,Finance,Director,167067.92,8,Tokyo,4.0,True,2021-09-03,5
+EMP-0183,Alex Johnson,Operations,Director,151968.56,10,New York,2.4,False,2021-10-10,1
+EMP-0184,Jordan Smith,Engineering,Manager,98071.92,7,Sydney,1.2,True,2019-02-01,5
+EMP-0185,Aisha Patel,Engineering,Manager,122390.64,19,Toronto,2.7,True,2018-09-25,10
+EMP-0186,Wei Garcia,Engineering,Director,129318.73,21,Kathmandu,2.5,True,2019-07-22,8
+EMP-0187,Carlos Johnson,Legal,Junior,33632.02,12,Tokyo,3.4,True,2019-01-01,5
+EMP-0188,Rohan Johnson,Finance,Lead,82923.92,4,Tokyo,3.7,False,2019-03-25,7
+EMP-0189,Aisha Jones,Engineering,Junior,30770.87,8,London,3.5,False,2018-03-20,1
+EMP-0190,Morgan Sharma,HR,Manager,93662.97,24,London,3.3,True,2020-04-08,7
+EMP-0191,Jordan Johnson,HR,Director,164806.69,18,Kathmandu,1.1,False,2020-04-01,5
+EMP-0192,Sam Jones,Engineering,Lead,103876.31,6,Berlin,3.0,False,2020-02-27,1
+EMP-0193,Nadia Brown,Engineering,Director,157575.18,20,Tokyo,3.0,False,2018-02-22,
+EMP-0194,Priya Smith,Engineering,Manager,121809.94,25,Kathmandu,3.7,True,2018-03-18,1
+EMP-0195,Nadia Brown,HR,Junior,32713.49,16,New York,2.3,True,2022-02-27,3
+EMP-0196,Casey Smith,Operations,Mid,172517.04,19,London,3.8,True,2021-12-08,
+EMP-0197,Rohan Brown,Sales,Junior,36136.58,18,New York,4.9,True,2022-06-26,10
+EMP-0198,Nadia Sharma,HR,Senior,88095.63,21,London,4.1,False,2021-11-03,2
+EMP-0199,Liam Sharma,Legal,Mid,63563.01,10,London,4.1,False,2021-11-28,3
+EMP-0200,Sofia Johnson,Marketing,Manager,95290.75,20,New York,3.7,True,2018-02-03,3
+EMP-0201,Casey Jones,Marketing,Junior,39644.38,9,Sydney,2.2,False,2019-02-28,3
+EMP-0202,Morgan Jones,HR,Mid,67387.97,1,Kathmandu,4.2,False,2021-06-08,8
+EMP-0203,Chris Davis,Engineering,Manager,103868.12,16,Toronto,4.6,True,2020-11-06,9
+EMP-0204,Riley Williams,Sales,Junior,32462.07,21,Berlin,3.3,True,2020-10-16,8
+EMP-0205,Jordan Sharma,Engineering,Director,139394.81,8,London,2.8,True,2018-08-03,1
+EMP-0206,Priya Miller,Legal,Junior,36540.86,7,London,4.7,False,2021-04-03,10
+EMP-0207,Nadia Davis,Marketing,Junior,34315.85,23,New York,3.0,False,2020-08-23,2
+EMP-0208,Sam Garcia,Marketing,Mid,67163.52,12,Kathmandu,3.8,True,2022-01-15,8
+EMP-0209,Priya Brown,Sales,Mid,47456.08,8,Kathmandu,4.5,True,2022-04-08,3
+EMP-0210,Wei Sharma,Legal,Director,172354.57,18,Tokyo,4.7,True,2018-06-28,4
+EMP-0211,Chris Patel,Finance,Lead,106631.6,23,London,2.0,True,2021-04-02,7
+EMP-0212,Aisha Davis,HR,Junior,30310.82,24,Toronto,4.2,True,2020-12-24,7
+EMP-0213,Chris Johnson,HR,Lead,85158.41,0,New York,3.2,False,2019-08-30,6
+EMP-0214,Carlos Williams,Operations,Senior,68604.09,18,Toronto,2.7,False,2020-07-21,1
+EMP-0215,Jordan Jones,Marketing,Senior,82554.33,0,Tokyo,3.7,False,2020-12-24,6
+EMP-0216,Priya Smith,Operations,Manager,117367.14,25,Sydney,3.3,False,2022-12-10,10
+EMP-0217,Sam Williams,Engineering,Junior,35111.37,1,Kathmandu,3.2,True,2021-02-23,2
+EMP-0218,Chris Garcia,Finance,Junior,38836.54,24,Kathmandu,3.9,False,2022-03-24,4
+EMP-0219,Marcus Sharma,Finance,Director,142684.03,11,Kathmandu,3.0,False,2020-08-21,2
+EMP-0220,Carlos Johnson,Finance,Senior,87747.12,25,New York,4.3,False,2019-01-22,2
+EMP-0221,Alex Jones,Marketing,Senior,92497.7,5,Tokyo,3.3,True,2020-12-03,4
+EMP-0222,Chris Sharma,HR,Senior,76353.9,0,Berlin,4.7,False,2018-02-16,2
+EMP-0223,Carlos Jones,HR,Manager,108582.87,10,Sydney,2.3,True,2020-07-01,9
+EMP-0224,Jordan Williams,Legal,Senior,68902.11,15,Kathmandu,3.6,False,2022-04-27,5
+EMP-0225,Chris Johnson,HR,Mid,60359.87,17,New York,3.0,False,2018-11-28,3
+EMP-0226,Priya Garcia,Finance,Mid,56449.55,6,London,5.0,False,2021-09-26,1
+EMP-0227,Priya Williams,HR,Manager,136420.49,3,New York,4.2,False,2020-07-28,3
+EMP-0228,Casey Patel,Operations,Director,135551.18,24,Berlin,3.1,False,2021-09-28,10
+EMP-0229,Chris Davis,Sales,Director,125289.67,1,Kathmandu,4.1,True,2021-06-19,7
+EMP-0230,Alex Johnson,Sales,Junior,38264.12,16,Sydney,4.3,False,2019-02-06,5
+EMP-0231,Liam Miller,Operations,Director,172626.93,12,London,3.7,False,2021-09-28,1
+EMP-0232,Marcus Johnson,Sales,Lead,89921.92,11,London,4.2,False,2022-11-27,8
+EMP-0233,Nadia Patel,Operations,Lead,105432.68,25,New York,3.3,True,2018-10-14,7
+EMP-0234,Aisha Johnson,Marketing,Senior,77988.39,10,New York,1.8,False,2021-04-25,
+EMP-0235,Marcus Davis,Operations,Senior,76185.42,22,New York,1.9,False,2019-08-17,7
+EMP-0236,Jamie Jones,Legal,Manager,106872.23,14,Berlin,2.8,False,2018-11-13,1
+EMP-0237,Jamie Davis,Engineering,Director,156291.15,5,New York,2.3,False,2022-04-17,2
+EMP-0238,Anya Patel,Finance,Lead,96860.69,20,New York,3.6,False,2020-02-05,2
+EMP-0239,Liam Smith,Marketing,Manager,96074.46,22,Kathmandu,3.8,False,2021-07-28,7
+EMP-0240,Riley Sharma,Finance,Director,171433.75,24,Kathmandu,3.9,False,2021-05-12,2
+EMP-0241,Casey Sharma,Legal,Director,163793.12,22,Kathmandu,3.4,False,2018-01-28,3
+EMP-0242,Chris Brown,Legal,Lead,91331.8,5,Toronto,3.2,True,2020-10-28,3
+EMP-0243,Carlos Patel,HR,Lead,109477.12,4,Sydney,4.3,False,2018-10-13,6
+EMP-0244,Chris Jones,Marketing,Director,136062.32,3,London,3.1,True,2021-11-11,3
+EMP-0245,Taylor Smith,Marketing,Junior,35697.27,3,Toronto,4.7,True,2019-02-08,1
+EMP-0246,Taylor Patel,HR,Junior,42469.41,9,London,4.1,True,2022-05-23,2
+EMP-0247,Anya Patel,Marketing,Director,138685.89,23,London,5.0,True,2022-10-19,3
+EMP-0248,Marcus Smith,Engineering,Manager,127082.74,22,Berlin,2.8,True,2018-12-19,5
+EMP-0249,Liam Miller,Marketing,Manager,130957.06,22,Tokyo,2.8,True,2022-09-07,3
+EMP-0250,Casey Davis,Finance,Mid,55716.72,10,Toronto,3.0,False,2020-12-01,2
+EMP-0251,Carlos Brown,Operations,Senior,80463.96,10,Sydney,2.7,False,2021-11-09,5
+EMP-0252,Alex Davis,Sales,Lead,83296.26,25,Berlin,3.5,True,2019-01-04,6
+EMP-0253,Riley Johnson,HR,Lead,95315.85,3,Kathmandu,4.0,True,2022-02-28,2
+EMP-0254,Sofia Jones,Sales,Mid,59839.14,3,Toronto,4.1,False,2022-01-26,7
+EMP-0255,Carlos Johnson,Legal,Director,171820.6,21,New York,2.9,False,2018-10-30,5
+EMP-0256,Morgan Davis,HR,Lead,84809.58,0,Berlin,3.0,True,2022-08-29,1
+EMP-0257,Anya Davis,Marketing,Lead,98265.02,9,Toronto,3.2,False,2022-03-21,
+EMP-0258,Alex Smith,Marketing,Senior,83612.8,8,Tokyo,3.3,True,2021-01-25,9
+EMP-0259,Riley Davis,HR,Lead,87824.13,14,Tokyo,4.0,True,2022-12-18,5
+EMP-0260,Marcus Patel,Sales,Director,140788.51,18,Tokyo,3.6,False,2021-11-05,9
+EMP-0261,Jordan Smith,Finance,Mid,57897.07,15,Sydney,2.8,True,2019-10-20,5
+EMP-0262,Taylor Miller,Marketing,Senior,74216.3,0,Kathmandu,3.1,False,2020-02-20,6
+EMP-0263,Drew Johnson,HR,Senior,65443.48,7,Kathmandu,2.9,True,2022-11-16,2
+EMP-0264,Alex Davis,Engineering,Manager,107849.14,13,Sydney,2.6,True,2019-07-02,7
+EMP-0265,Anya Garcia,Sales,Lead,97032.73,3,London,3.6,False,2020-10-15,6
+EMP-0266,Marcus Brown,Sales,Lead,83763.31,25,Kathmandu,3.2,False,2022-10-09,
+EMP-0267,Nadia Garcia,Engineering,Senior,93636.83,7,Kathmandu,2.1,True,2018-07-15,10
+EMP-0268,Drew Sharma,Finance,Manager,114411.81,25,Toronto,2.1,False,2022-08-16,
+EMP-0269,Alex Sharma,HR,Director,149237.06,12,Toronto,3.5,True,2019-01-06,9
+EMP-0270,Marcus Patel,Finance,Lead,84166.3,23,Toronto,4.5,False,2021-07-31,5
+EMP-0271,Wei Miller,Finance,Director,154098.47,11,Kathmandu,2.9,True,2022-09-26,5
+EMP-0272,Rohan Brown,Operations,Mid,65361.27,9,Tokyo,3.6,True,2021-11-08,5
+EMP-0273,Riley Jones,Engineering,Mid,50972.15,9,London,2.5,True,2019-02-19,1
+EMP-0274,Alex Smith,Sales,Senior,83510.12,1,Toronto,3.7,True,2022-05-23,8
+EMP-0275,Casey Brown,Sales,Manager,106611.08,13,New York,4.5,True,2022-09-17,7
+EMP-0276,Rohan Johnson,Finance,Director,165422.97,16,Toronto,2.8,False,2019-05-04,2
+EMP-0277,Jamie Davis,Sales,Manager,125938.4,23,Tokyo,3.6,False,2019-03-16,3
+EMP-0278,Wei Davis,Legal,Manager,95960.72,22,Berlin,4.3,True,2021-01-23,6
+EMP-0279,Chris Jones,Sales,Mid,54735.96,9,Sydney,5.0,False,2021-11-16,1
+EMP-0280,Chris Davis,Sales,Director,172675.08,25,Tokyo,3.8,True,2022-11-12,9
+EMP-0281,Priya Miller,HR,Senior,72776.64,24,Toronto,3.6,True,2021-07-18,8
+EMP-0282,Wei Johnson,Sales,Junior,41274.77,15,Toronto,4.0,True,2022-01-10,6
+EMP-0283,Jordan Williams,Operations,Senior,78940.04,19,Berlin,3.4,False,2022-04-11,1
+EMP-0284,Taylor Williams,Legal,Director,126621.16,20,London,2.5,True,2018-06-19,10
+EMP-0285,Nadia Garcia,Legal,Manager,123673.15,10,Toronto,1.9,False,2021-11-09,3
+EMP-0286,Alex Smith,Marketing,Junior,35552.95,12,Sydney,4.0,True,2019-04-06,10
+EMP-0287,Liam Williams,Engineering,Lead,83637.58,5,Sydney,4.6,True,2018-07-03,3
+EMP-0288,Chris Brown,Engineering,Director,148446.91,14,London,3.8,False,2018-09-01,8
+EMP-0289,Riley Miller,Sales,Director,146673.42,6,Toronto,1.4,True,2020-05-07,4
+EMP-0290,Carlos Johnson,Engineering,Senior,93033.84,14,New York,2.0,False,2021-04-09,6
+EMP-0291,Taylor Sharma,Marketing,Senior,92981.98,6,New York,3.2,True,2018-05-31,5
+EMP-0292,Jordan Smith,Sales,Mid,57110.51,19,Kathmandu,2.3,False,2021-12-25,10
+EMP-0293,Carlos Williams,Sales,Lead,100665.43,17,New York,4.0,False,2019-11-27,8
+EMP-0294,Sofia Jones,Operations,Manager,112548.9,10,Berlin,3.6,False,2018-09-20,
+EMP-0295,Sofia Williams,HR,Senior,90833.78,24,Sydney,4.4,False,2019-10-10,3
+EMP-0296,Carlos Miller,Engineering,Mid,50019.66,1,New York,3.1,False,2021-12-17,3
+EMP-0297,Liam Johnson,Engineering,Lead,89334.72,15,London,3.1,False,2018-09-12,3
+EMP-0298,Nadia Smith,Marketing,Mid,63248.61,18,Sydney,3.6,True,2019-03-12,10
+EMP-0299,Liam Patel,HR,Junior,33196.2,3,New York,3.6,False,2020-03-19,2
+EMP-0300,Alex Garcia,Marketing,Junior,30884.89,21,New York,3.4,False,2021-05-02,5
